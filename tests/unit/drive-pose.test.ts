@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { FORMATIONS, KICKOFF_AWAY, type Formation, type SlotId } from "@/lib/drive/formations";
 import { MOTIONS, ballAt, slotAt } from "@/lib/drive/motion";
 import { PLAYS } from "@/lib/drive/plays";
-import { CAMERA_X, SCENES, poseAt, type Pose } from "@/lib/drive/pose";
+import { CAMERA_X, SCENES, poseAt, showsLines, type Pose } from "@/lib/drive/pose";
 
 // Task 3's table: [before tag, before spot, after tag, after spot]
 const TABLE = [
@@ -21,6 +21,8 @@ const SLOTS = [...Array(11).keys()].flatMap((i) => [`o${i}`, `d${i}`]) as SlotId
 const side = (f: Formation, s: "o" | "d") => SLOTS.filter((id) => id.startsWith(s)).map((id) => f.slots[id]);
 const near = (a: number, b: number) => Math.abs(a - b) < 0.01;
 const dist = (a: { x: number; y: number }, b: { x: number; y: number }) => Math.hypot(a.x - b.x, a.y - b.y);
+// The sweeps below run every lesson at hundreds of moments: seconds of work, more on a busy machine
+const SWEEP = 30_000;
 const steps = (n: number) => [...Array(n + 1).keys()].map((i) => i / n);
 
 // Teammates the plays mean to bring together, by lesson index (slots in sorted order). Opponents may meet in a
@@ -181,7 +183,7 @@ describe("the pose", () => {
         prev = cur;
       }
     }
-  });
+  }, SWEEP);
   it("never runs a player through a teammate or an opponent", () => {
     const allowed = new Set(Object.entries(CONTACT).flatMap(([lesson, pairs]) => pairs.map(([a, b]) => `${lesson} ${a} ${b}`)));
     const tooClose = new Set<string>();
@@ -199,7 +201,7 @@ describe("the pose", () => {
       }
     }
     expect([...tooClose]).toEqual([]);
-  });
+  }, SWEEP);
   it("gives each pose its own labels", () => {
     poseAt(4, 0.5).labels.push("o1");
     expect(poseAt(4, 0.5).labels).toEqual(MOTIONS["inside-zone"].labels);
@@ -227,6 +229,9 @@ describe("the pose", () => {
     expect(p.tag).toBe("1st & 10 · own 35");
     expect(poseAt(2, 0.5).tag).toBe("1st & 10 · own 35");
     expect(poseAt(3, 0.5).firstDown).toBeCloseTo(55, 5);
+  });
+  it("draws the blue and yellow lines only around a snap, never during a kickoff or the opening pan", () => {
+    expect(SCENES.map(showsLines)).toEqual(SCENES.map((_, i) => i !== 0 && i !== 1 && i !== 22));
   });
   it("draws no yellow line on 1st & goal", () => {
     expect(poseAt(19, 0.1).firstDown).toBeNull();

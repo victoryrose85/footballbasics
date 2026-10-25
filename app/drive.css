@@ -17,15 +17,19 @@
 /* desktop: the window pinned in the left column, the lessons scrolling in the right */
 .drive{display:grid;grid-template-columns:45% minmax(0,1fr);gap:22px;align-items:start;margin-top:8px}
 .drive .window{position:sticky;top:16px;height:min(calc(100vh - 32px),640px);overflow:hidden;container-type:size;--u:calc(100cqw / 24);background:color-mix(in srgb,var(--stripe-b) 50%,var(--ink));border:3px solid var(--ink);border-radius:14px;box-shadow:6px 6px 0 var(--ink);z-index:2}
-.drive .lessons{padding:4px 0 20vh}
+/* the last play ends when the last card's bottom reaches the middle of the screen (lib/drive/scroll.ts); the space
+   under it keeps the window, whose bottom is min(100vh - 16px, 656px) down, pinned until then */
+.drive .lessons{padding:4px 0 max(20vh,min(50vh - 16px,656px - 50vh))}
 .drive .lesson{margin:0 6px 30vh 0}
 
-/* phones and tablets: the window pinned to the top of the screen, the full width of the sheet */
+/* phones and tablets: the window pinned to the top of the screen, the full width of the sheet. A lesson is read
+   40% of the way down what the window leaves (lib/drive/scroll.ts), so on a short screen (360x640, or a phone on
+   its side) both the window and the gap between lessons shrink, to keep the lesson being played in view */
 @media (max-width:1000px){
   .drive{display:block}
-  .drive .window{top:0;height:min(42vh,300px);margin:0 -14px;border-width:3px 0;border-radius:0;box-shadow:none}
+  .drive .window{top:0;height:min(36vh,300px);margin:0 -14px;border-width:3px 0;border-radius:0;box-shadow:none}
   .drive .lessons{padding:22px 0 12vh}
-  .drive .lesson{margin-bottom:64px}
+  .drive .lesson{margin-bottom:clamp(12px,8vh - 32px,64px)}
 }
 
 /* the field: all 120 yards, turf mown in 5-yard stripes, with darker end zones */
@@ -49,12 +53,13 @@
 .drive .ball{width:8px;height:12px;margin:-6px 0 0 -4px;border-radius:50%;background:var(--ball);border:1.5px solid var(--ink);transform:translate(calc(var(--x) * var(--u)),calc(var(--y) * var(--u)))}
 .drive .flag{width:10px;height:10px;margin:-5px 0 0 -5px;background:var(--flag);border:1.5px solid var(--ink);border-radius:2px;transform:translate(calc(var(--x) * var(--u)),calc(var(--y) * var(--u))) rotate(20deg)}
 
-/* the players: 0x0 anchors at their spot, a 12px dot, and a name shown only for the (at most two) labeled ones */
+/* the players: 0x0 anchors at their spot, a 12px dot, and a name shown only for the (at most two) labeled ones.
+   The engine moves a name off its spot here (lib/drive/apply.ts, which knows its size) to keep it clear of the others */
 .drive .players{position:absolute;inset:0;z-index:1}
 .drive .pl{position:absolute;left:0;top:0;width:0;height:0;border:0;cursor:pointer;transform:translate(calc(var(--x) * var(--u)),calc(var(--y) * var(--u)))}
 .drive .pl .dot{position:absolute;left:-6px;top:-6px;width:12px;height:12px;border-radius:50%;background:var(--offense);border:2px solid var(--ink)}
 .drive .pl.d .dot{background:var(--defense)}
-.drive .pl .nm{position:absolute;left:10px;top:-9px;white-space:nowrap;font:700 12.5px/18px var(--font-body),sans-serif;color:#fff;text-shadow:1.5px 1.5px 0 var(--ink),-1px -1px 0 var(--ink),1px -1px 0 var(--ink),-1px 1px 0 var(--ink)}
+.drive .pl .nm{position:absolute;left:10px;top:-7.5px;white-space:nowrap;font:700 12.5px/15px var(--font-body),sans-serif;color:#fff;text-shadow:1.5px 1.5px 0 var(--ink),-1px -1px 0 var(--ink),1px -1px 0 var(--ink),-1px 1px 0 var(--ink)}
 .drive .pl:not(.lab) .nm{width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
 .drive .pl:hover .dot,.drive .pl[aria-expanded="true"] .dot{background:var(--accent)}
 .drive .pl:focus-visible{outline:none}
@@ -82,4 +87,6 @@
 .drive .lesson:nth-child(even){transform:rotate(.5deg)}
 @media (max-width:560px){.drive .lesson:nth-child(odd){transform:rotate(-.4deg)}.drive .lesson:nth-child(even){transform:rotate(.4deg)}}
 
+.home .guides{margin-top:40px}
 .home .guides h2{margin-top:12px}
+@media (max-width:1000px){.home .guides{margin-top:0}}

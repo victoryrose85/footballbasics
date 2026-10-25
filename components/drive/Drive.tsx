@@ -1,7 +1,7 @@
 import DriveEngine from "./DriveEngine";
 import { SLOTS } from "@/lib/drive/formations";
 import { LESSONS } from "@/lib/drive/lessons";
-import { SCENES, poseAt } from "@/lib/drive/pose";
+import { SCENES, poseAt, showsLines } from "@/lib/drive/pose";
 import { POSITION_TIPS } from "@/lib/drive/tips";
 import { PAGES } from "@/lib/pages";
 
@@ -16,8 +16,8 @@ const at = (x: number, y: number) => ({ "--x": r2(x), "--y": r2(y) }) as React.C
 
 // The first frame, before any JavaScript runs: lesson 0 at its start
 const pose = poseAt(0, 0);
-// The kicking scenes show no blue or yellow line (ruling R8)
-const lines = !(SCENES[0] === "field" || SCENES[0] === "kickoff" || SCENES[0] === "kickoff-after");
+// The opening pan shows no blue or yellow line (ruling R8)
+const lines = showsLines(SCENES[0]);
 
 // The yard numbers, 10 to 50 and back, on both sides of the field
 const NUMBERS = [20, 30, 40, 50, 60, 70, 80, 90, 100].map((y) => ({ y, n: Math.min(y - 10, 110 - y) }));

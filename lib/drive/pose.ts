@@ -27,7 +27,13 @@ export const SCENES: Scene[] = [
   "try", "kickoff-after",
 ];
 
+// The opening pan and the kickoffs draw no line of scrimmage and no line to gain: there's no snap to mark
+export function showsLines(scene: Scene): boolean {
+  return scene !== "field" && scene !== "kickoff" && scene !== "kickoff-after";
+}
+
 export const FIELD_WIDTH = 53.3;
+export const FIELD_LENGTH = 120;
 export const WINDOW_YARDS = 24; // how much of the field's width the window shows
 export const CAMERA_X = [WINDOW_YARDS / 2, FIELD_WIDTH - WINDOW_YARDS / 2] as const; // never past a sideline
 const CAMERA_Y = [8, 112] as const; // keeps a phone's window inside the end lines
