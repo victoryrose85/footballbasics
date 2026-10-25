@@ -69,8 +69,9 @@
 .drive .dtag{position:absolute;left:8px;top:8px;z-index:3;font:700 14px/1 var(--font-display),sans-serif;letter-spacing:.03em;color:#fff;background:var(--ink);border:2px solid var(--ink);border-left:6px solid var(--accent);border-radius:6px;padding:5px 9px 6px;white-space:nowrap;pointer-events:none}
 
 /* a position's tip, inside the window */
-.drive .tips{position:absolute;inset:8px;z-index:4;display:flex;align-items:flex-end;pointer-events:none}
-.drive .info{pointer-events:auto;width:100%;max-width:300px;max-height:100%;overflow:auto;overscroll-behavior:contain;background:#fff;border:3px solid var(--ink);border-radius:14px;box-shadow:4px 4px 0 var(--ink);padding:10px 13px 12px;color:var(--text);opacity:0;transform:translateY(6px);transition:opacity .2s,transform .2s}
+/* every panel shares one cell at the bottom, so a fading one never sits beside the one arriving */
+.drive .tips{position:absolute;inset:8px;z-index:4;display:grid;grid-template:minmax(0,1fr)/minmax(0,1fr);align-items:end;pointer-events:none}
+.drive .info{grid-area:1/1;pointer-events:auto;min-width:0;max-height:100%;overflow:auto;overscroll-behavior:contain;background:#fff;border:3px solid var(--ink);border-radius:14px;box-shadow:4px 4px 0 var(--ink);padding:10px 13px 12px;color:var(--text);opacity:0;transform:translateY(6px);transition:opacity .2s,transform .2s}
 .drive .info.on{opacity:1;transform:none}
 @media (prefers-reduced-motion:reduce){.drive .info{transition:none}}
 .drive .info .ih{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px}
@@ -80,6 +81,9 @@
 .drive .info i.defense{background:var(--defense)}
 .drive .info i.kicking{background:var(--accent)}
 .drive .info span{display:block;font:600 14px/1.5 var(--font-body),sans-serif}
+
+/* the panel spans the window minus 8px each side; on the wider desktop window it stops at 340px, at the left */
+@media (min-width:1001px){.drive .info{max-width:340px;justify-self:start}}
 
 /* the lessons: the template's white blocks, each tilted a touch */
 .sheet .lesson h2{font:700 clamp(21px,5.6vw,25px)/1.15 var(--font-display),sans-serif;color:var(--ink);text-shadow:none;margin:0 0 6px}

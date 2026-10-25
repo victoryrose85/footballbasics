@@ -59,9 +59,10 @@ export function bindTips(root: HTMLElement): () => void {
   };
   const onKey = (e: KeyboardEvent) => {
     if (e.key !== "Escape" || !open) return;
-    const btn = open.btn;
+    const { btn, tip } = open;
+    const a = document.activeElement;
     hide();
-    btn.focus();
+    if (a === btn || tip.contains(a)) btn.focus({ preventScroll: true }); // a hover-opened tip leaves focus alone
   };
 
   const tips = Array.from(root.querySelectorAll<HTMLElement>(".info"));
@@ -85,8 +86,8 @@ export function bindTips(root: HTMLElement): () => void {
     root.removeEventListener("drive:lesson", hide);
     document.removeEventListener("pointerdown", onDown);
     document.removeEventListener("keydown", onKey);
-    timers.forEach((id) => clearTimeout(id));
     hide();
+    timers.forEach((id) => clearTimeout(id));
     tips.forEach((t) => { t.hidden = true; t.classList.remove("on"); });
   };
 }

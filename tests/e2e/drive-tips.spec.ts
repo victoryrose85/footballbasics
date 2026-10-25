@@ -119,3 +119,41 @@ test("keyboard opens and closes tips", async ({ page }) => {
   await expect(focused).toHaveAttribute("aria-expanded", "false");
   expect(await page.evaluate(() => document.activeElement?.matches("button.pl"))).toBe(true);
 });
+
+test("switching tips never lays two panels side by side", async ({ page }) => {
+  await open(page, 412, 915);
+  await goTo(page, 4, 0.1);
+  // open one tip, then another inside the fade (200ms), and measure at once
+  const r = await page.evaluate(() => {
+    const [a, b] = Array.from(document.querySelectorAll<HTMLElement>("button.pl:not([aria-hidden])")).filter((x, i, all) => all.findIndex(y => y.getAttribute("aria-controls") === x.getAttribute("aria-controls")) === i);
+    a.click(); b.click();
+    const box = (id: string) => document.getElementById(id)!.getBoundingClientRect();
+    const win = document.querySelector(".drive .window")!.getBoundingClientRect();
+    const ta = box(a.getAttribute("aria-controls")!), tb = box(b.getAttribute("aria-controls")!);
+    return { win: [win.left, win.width], a: [ta.left, ta.width, ta.height], b: [tb.left, tb.width] };
+  });
+  expect(r.b[1], "the new panel is the full width").toBeCloseTo(r.win[1] - 16, 0);
+  if (r.a[2] > 0) expect(r.a[0], "both share a left edge").toBeCloseTo(r.b[0], 0);
+});
+
+test("a panel spans the window minus 8px on a phone", async ({ page }) => {
+  await open(page, 412, 915);
+  await goTo(page, 4, 0.1);
+  await page.locator('button.pl[aria-controls="tip-qb"]').first().click();
+  const [w, t] = await Promise.all([page.locator(".drive .window").boundingBox(), page.locator("#tip-qb").boundingBox()]);
+  expect(t!.x - w!.x).toBeCloseTo(8, 0);
+  expect(w!.x + w!.width - (t!.x + t!.width)).toBeCloseTo(8, 0);
+});
+
+test.describe("touch", () => {
+  test.use({ hasTouch: true });
+  test("a tap opens a tip and a second tap on the same dot closes it", async ({ page }) => {
+    await open(page, 412, 915);
+    await goTo(page, 4, 0.1);
+    const dot = page.locator('button.pl[aria-controls="tip-qb"]').first();
+    await dot.tap();
+    await expect(page.locator("#tip-qb")).toBeVisible();
+    await dot.tap();
+    await expect(page.locator("#tip-qb")).toBeHidden();
+  });
+});
