@@ -18,7 +18,7 @@ const GUIDE_SLUGS = [
 ];
 
 const POSITIONS: Position[] = ["qb", "c", "g", "t", "te", "wr", "rb", "fb", "k", "p", "ls", "h",
-  "dt", "de", "lb", "cb", "s", "kr", "pr", "cov"];
+  "dt", "de", "lb", "cb", "s", "kr", "pr", "cov", "blk"];
 
 // What a reader sees: tags stripped, entities decoded, curly apostrophes made straight for the regexes
 function text(html: string): string {

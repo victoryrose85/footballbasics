@@ -2,7 +2,8 @@
 // sideline, +dy toward the offense's own end line. So the offense has dy >= 0 and the defense dy < 0.
 export type SlotId = `o${0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10}` | `d${0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10}`;
 export type Position = "qb" | "c" | "g" | "t" | "te" | "wr" | "rb" | "fb" | "k" | "p" | "ls" | "h"
-  | "dt" | "de" | "lb" | "cb" | "s" | "kr" | "pr" | "cov"; // cov: a kickoff or punt coverage player
+  | "dt" | "de" | "lb" | "cb" | "s" | "kr" | "pr"
+  | "cov" | "blk"; // cov: a kickoff or punt coverage player; blk: a kickoff return blocker
 export type FormationId = "shotgun" | "singleback" | "i-form" | "heavy" | "goal-line" | "kickoff" | "field-goal";
 export interface Formation { id: FormationId; slots: Record<SlotId, { pos: Position; at: [number, number] }> }
 
@@ -51,11 +52,11 @@ export const FORMATIONS: Record<FormationId, Formation> = {
     [["de", -5.4, -1.3], ["dt", -1.1, -1.2], ["dt", 1.3, -1.2], ["de", 5.4, -1.3],
       ["lb", -3, -3.2], ["lb", 0.2, -3.5], ["lb", 3.2, -3.2], ["cb", -9, -2.5], ["cb", 7, -4], ["s", -3, -7], ["s", 4, -7]]),
   // The 2026 kickoff (rules check, row 2), with the defense kicking from its own 35. Ten coverage players
-  // stand on the receivers' 40, 25 yards in front of the ball; nine receivers fill the setup zone (their 30 to
-  // their 35), five of them on the 35; two returners wait in the landing zone and the end zone.
+  // stand on the receivers' 40, 25 yards in front of the ball; nine return blockers fill the setup zone (their 30
+  // to their 35), five of them on the 35; two returners wait in the landing zone and the end zone.
   kickoff: unit("kickoff",
-    [["kr", 0, 69], ["te", 0, 30.5], ["fb", -10, 30.5], ["te", 10, 30.5], ["wr", -20, 30.5], ["wr", 20, 30.5],
-      ["rb", -15, 34], ["fb", -5, 34], ["te", 5, 34], ["rb", 15, 34], ["kr", 6, 60]],
+    [["kr", 0, 69], ...[0, -10, 10, -20, 20].map((dx): Spot => ["blk", dx, 30.5]),
+      ...[-15, -5, 5, 15].map((dx): Spot => ["blk", dx, 34]), ["kr", 6, 60]],
     [["k", -1, -6], ...[-22, -17.6, -13.2, -8.8, -4.4, 4.4, 8.8, 13.2, 17.6, 22].map((dx): Spot => ["cov", dx, 24.5])]),
   // Field goals and the extra point: snapper, guards, tackles and tight ends on the line, two wings, the holder
   // 7 yards back and the kicker behind him. The defense packs the line to block it.
@@ -71,14 +72,12 @@ export const SLOTS = [...Array(11).keys()].flatMap((i) => [`o${i}`, `d${i}`]) as
 // The same player on the other team: o3 <-> d3
 export const otherSide = (slot: SlotId) => ((slot[0] === "o" ? "d" : "o") + slot.slice(1)) as SlotId;
 
-// The receiving team's positions when the defense receives instead
-const RETURN_SIDE: Partial<Record<Position, Position>> = { te: "lb", fb: "lb", rb: "s", wr: "cb" };
-
-// The kickoff after the score: the offense kicks, so the sides swap and the field turns around
+// The kickoff after the score: the offense kicks, so the sides swap (each player keeps his kickoff job) and the
+// field turns around
 export const KICKOFF_AWAY: Formation = {
   id: "kickoff",
   slots: Object.fromEntries(SLOTS.map((slot) => {
     const { pos, at } = FORMATIONS.kickoff.slots[slot];
-    return [otherSide(slot), { pos: slot[0] === "o" ? RETURN_SIDE[pos] ?? pos : pos, at: [at[0], -at[1]] }];
+    return [otherSide(slot), { pos, at: [at[0], -at[1]] }];
   })) as Formation["slots"],
 };
