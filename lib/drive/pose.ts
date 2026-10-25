@@ -160,7 +160,7 @@ function poseOf(st: Stage, t: number, pan: boolean): Pose {
     : follow;
 
   const flag = st.motion?.flag && t >= PHASES.whistle[0] ? onField(st.snap.ball, st.motion.flag) : null;
-  return { players, ball: m.ball, los: m.los, firstDown: m.firstDown, flag, tag: st.tags[t < PHASES.placed[0] ? 0 : 1], camera, labels: st.labels };
+  return { players, ball: m.ball, los: m.los, firstDown: m.firstDown, flag, tag: st.tags[t < PHASES.placed[0] ? 0 : 1], camera, labels: [...st.labels] };
 }
 
 // lesson: 0 to 22. t: 0 to 1 through that lesson's stretch of scroll. A lesson with two plays gives each half.

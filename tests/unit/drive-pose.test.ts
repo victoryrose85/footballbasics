@@ -23,6 +23,19 @@ const near = (a: number, b: number) => Math.abs(a - b) < 0.01;
 const dist = (a: { x: number; y: number }, b: { x: number; y: number }) => Math.hypot(a.x - b.x, a.y - b.y);
 const steps = (n: number) => [...Array(n + 1).keys()].map((i) => i / n);
 
+// Teammates the plays mean to bring together, by lesson index (slots in sorted order). Opponents may meet in a
+// block or a tackle, but never closer than 0.3 yards (dots 12px across at about 15px a yard).
+const CONTACT: Record<number, [SlotId, SlotId, string][]> = {
+  4: [["o0", "o10", "the handoff"]],
+  8: [["o0", "o10", "the handoff"]],
+  12: [["o0", "o10", "the fake handoff"]],
+  17: [["o0", "o1", "the quarterback sneaks in right behind the center"]],
+  18: [["o0", "o10", "the fake handoff"]],
+  19: [["o0", "o10", "the handoff"]],
+  20: [["o0", "o10", "the fake handoff"]],
+  21: [["o0", "o10", "the kicker kicks the ball off the holder's hand"]],
+};
+
 // Each play lesson, with the indexes of its first and last play in PLAYS
 const playLessons = SCENES.flatMap((scene, lesson) => {
   if (typeof scene === "string") return [];
@@ -102,6 +115,22 @@ describe("motions", () => {
     const r = p.result.kind === "penalty" && p.result.wiped ? p.result.wiped : p.result;
     if (r.kind === "gain" && p.id !== "p21") expect(end[1]).toBeCloseTo(-r.yards, 5);
   });
+  it("puts the offside end past the line at the snap, while everyone else waits for it", () => {
+    const m = MOTIONS["offside-incomplete"];
+    const f = FORMATIONS.shotgun;
+    const snap = m.ball[0]; // the ball sits on the spot until this key, then moves
+    expect(snap.at).toEqual([0, 0]);
+    expect(snap.t).toBeGreaterThan(0);
+    expect(slotAt(f, m, "d3", snap.t)[1]).toBeGreaterThan(0);
+    for (const s of SLOTS) if (s !== "d3") expect(slotAt(f, m, s, snap.t), s).toEqual(f.slots[s].at);
+    const p = poseAt(10, 0.2 + 0.55 * snap.t); // the same moment on the field
+    expect(p.ball.y).toBeCloseTo(p.los, 5);
+    expect(p.players.d3.y).toBeLessThan(p.los);
+  });
+  it("brings every ball back to the ground", () => {
+    for (const m of Object.values(MOTIONS)) expect(m.ball.at(-1)?.h ?? 0, m.id).toBe(0);
+    for (let i = 0; i < 23; i++) expect(poseAt(i, 0.8).ball.h, `lesson ${i} at the whistle`).toBe(0);
+  });
   it("snaps no ball on a pre-snap foul, and flags every penalty and only those", () => {
     for (const p of PLAYS) {
       const m = MOTIONS[p.motion];
@@ -152,6 +181,29 @@ describe("the pose", () => {
         prev = cur;
       }
     }
+  });
+  it("never runs a player through a teammate or an opponent", () => {
+    const allowed = new Set(Object.entries(CONTACT).flatMap(([lesson, pairs]) => pairs.map(([a, b]) => `${lesson} ${a} ${b}`)));
+    const tooClose = new Set<string>();
+    for (let i = 0; i < 23; i++) {
+      for (const t of steps(800)) {
+        const p = poseAt(i, t);
+        const on = SLOTS.filter((s) => p.players[s].opacity > 0).sort();
+        for (let a = 0; a < on.length; a++) {
+          for (let b = a + 1; b < on.length; b++) {
+            const teammates = on[a][0] === on[b][0];
+            if (teammates && allowed.has(`${i} ${on[a]} ${on[b]}`)) continue;
+            if (dist(p.players[on[a]], p.players[on[b]]) < (teammates ? 0.5 : 0.3)) tooClose.add(`lesson ${i} ${on[a]}–${on[b]}`);
+          }
+        }
+      }
+    }
+    expect([...tooClose]).toEqual([]);
+  });
+  it("gives each pose its own labels", () => {
+    poseAt(4, 0.5).labels.push("o1");
+    expect(poseAt(4, 0.5).labels).toEqual(MOTIONS["inside-zone"].labels);
+    expect(MOTIONS["inside-zone"].labels).toHaveLength(2);
   });
   it.each(playLessons.map((l) => [l.lesson, l] as const))("lesson %i shows the before tag, then the after tag", (lesson, l) => {
     const [bt, bs] = TABLE[l.first];

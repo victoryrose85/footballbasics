@@ -50,6 +50,9 @@ type Block = "run" | "pass" | "kick";
 interface Spec {
   formation: FormationId;
   block?: Block; // linemen and pass rushers not in `moves` follow the usual steps
+  // The ball sits on the spot until t (otherwise it's snapped at once), and nobody moves before then but the
+  // early ones: a player who is offside at the snap
+  snap?: { t: number; early?: SlotId[] };
   moves: Partial<Record<SlotId, Path>>;
   ball?: Step[];
   labels: SlotId[];
@@ -78,9 +81,19 @@ function build(id: MotionId, spec: Spec): Motion {
     }
   }
   for (const [slot, path] of Object.entries(spec.moves)) moves[slot as SlotId] = keys(path);
+  const steps = [...(spec.ball ?? [])];
+  if (spec.snap) {
+    const { t, early = [] } = spec.snap;
+    for (const [slot, ks] of Object.entries(moves) as [SlotId, Key[]][]) {
+      if (early.includes(slot)) continue;
+      if (ks[0].t < t) throw new Error(`${id}: ${slot} moves before the snap`);
+      if (ks[0].t > t) ks.unshift({ t, at: f.slots[slot].at });
+    }
+    if (steps[0]?.t !== t) steps.unshift({ t, at: [0, 0], h: 0 });
+  }
   const m: Motion = { id, moves, ball: [], labels: spec.labels, ...(spec.flag && { flag: spec.flag }) };
   let holder: SlotId | undefined;
-  for (const step of spec.ball ?? []) {
+  for (const step of steps) {
     const who = step.carrier ?? holder;
     const at = step.at ?? (who && slotAt(f, m, who, step.t));
     if (!at) throw new Error(`${id}: the ball step at ${step.t} has no spot`);
@@ -133,7 +146,7 @@ const SPECS: Record<MotionId, Spec> = {
     formation: "singleback", block: "run",
     moves: {
       o0: [[0.06, 0.3, 2.4], [0.12, 0.6, 3], [0.3, -1, 3.8], [0.5, -2.4, 4.4]],
-      o10: [[0.12, 0.8, 3.2], [0.3, 1.5, 1], [0.5, 1.8, -1.8], [0.68, 2, -4]],
+      o10: [[0.12, 0.8, 3.2], [0.3, 1.8, 1.2], [0.45, 2.1, -0.6], [0.55, 2.2, -2], [0.68, 2.3, -4]],
       o6: [[0.15, 4.3, -0.2], [0.5, 4.7, -1.2]],
       o8: [[0.2, -3.8, 0.4], [0.5, -3.6, -0.6]],
       o7: [[0.5, -15, -6]], o9: [[0.5, 12, -5]],
@@ -144,7 +157,7 @@ const SPECS: Record<MotionId, Spec> = {
       d7: [[0.5, -15.4, -6.8]], d8: [[0.5, 12.4, -6.2]],
       d9: [[0.7, -2, -9]], d10: [[0.7, 3.5, -7.5]],
     },
-    ball: [{ t: 0.04, carrier: "o0", h: 1 }, { t: 0.12, carrier: "o10", h: 1 }, { t: 0.7, carrier: "o10", h: 0.5 }],
+    ball: [{ t: 0.04, carrier: "o0", h: 1 }, { t: 0.12, carrier: "o10", h: 1 }, { t: 0.66, carrier: "o10", h: 1 }, { t: 0.72, carrier: "o10", h: 0 }],
     labels: ["o10", "d5"],
   },
 
@@ -198,8 +211,8 @@ const SPECS: Record<MotionId, Spec> = {
     formation: "i-form", block: "run",
     moves: {
       o0: [[0.06, -0.2, 2.6], [0.12, -0.5, 3.3], [0.4, 0.4, 4.4]],
-      o10: [[0.12, -0.6, 3.9], [0.3, -1.6, 1], [0.5, -2.2, -3.5], [0.7, -2, -9], [0.82, -1.6, -12]],
-      o8: [[0.2, -1.2, 1.2], [0.45, -2.8, -3]],
+      o10: [[0.12, -0.6, 3.9], [0.3, -1.8, 1.2], [0.42, -2.1, -0.6], [0.5, -2.2, -3.5], [0.7, -2, -9], [0.82, -1.6, -12]],
+      o8: [[0.08, -1.2, 3.2], [0.2, -2, 1.4], [0.32, -2.1, -0.6], [0.45, -3, -3]],
       o3: [[0.15, 1.5, -0.2], [0.5, 1.9, -0.5]],
       o6: [[0.15, 4.3, -0.2], [0.5, 4.6, -1.1]],
       o7: [[0.5, -14.5, -7]], o9: [[0.5, 14, -6]],
@@ -210,12 +223,13 @@ const SPECS: Record<MotionId, Spec> = {
       d7: [[0.5, -14.8, -7.8]], d8: [[0.5, 14.4, -6.8]],
       d9: [[0.5, -3.6, -10.8], [0.82, -2.1, -12.9]], d10: [[0.82, 1, -13.5]],
     },
-    ball: [{ t: 0.04, carrier: "o0", h: 1 }, { t: 0.12, carrier: "o10", h: 1 }, { t: 0.85, carrier: "o10", h: 0.5 }],
+    ball: [{ t: 0.04, carrier: "o0", h: 1 }, { t: 0.12, carrier: "o10", h: 1 }, { t: 0.82, carrier: "o10", h: 1 }, { t: 0.88, carrier: "o10", h: 0 }],
     labels: ["o10", "o3"],
     flag: [2.6, 0.3],
   },
 
-  // Lesson 10: a hitch to the tight end, caught 2 yards short of the yellow line, run on to a gain of 8
+  // Lesson 10: on 1st & 20, a hitch to the tight end, caught 6 yards out and run on to a gain of 8, well short
+  // of the yellow line
   "te-hitch": {
     formation: "singleback", block: "pass",
     moves: {
@@ -229,15 +243,15 @@ const SPECS: Record<MotionId, Spec> = {
       d9: [[0.5, -7, -15]], d10: [[0.6, 5.5, -10]],
     },
     ball: [{ t: 0.03, carrier: "o0", h: 1 }, { t: 0.32, h: 2 }, { t: 0.37, at: [2.6, 0.4], h: 3 },
-      { t: 0.42, carrier: "o6", h: 1.2 }, { t: 0.62, carrier: "o6", h: 0.6 }],
+      { t: 0.42, carrier: "o6", h: 1.2 }, { t: 0.6, carrier: "o6", h: 1 }, { t: 0.66, carrier: "o6", h: 0 }],
     labels: ["o0", "o6"],
   },
 
   // Lesson 11: the right end jumps across before the snap, the play goes on, and the pass sails over the tight end
   "offside-incomplete": {
-    formation: "shotgun", block: "pass",
+    formation: "shotgun", block: "pass", snap: { t: 0.08, early: ["d3"] },
     moves: {
-      d3: [[0.04, 5, 0.2], [0.2, 4.6, 2.4], [0.45, 1.8, 5.4]],
+      d3: [[0.05, 5, 0.4], [0.2, 4.6, 2.4], [0.45, 1.8, 5.4]],
       o0: GUN_SET,
       o6: [[0.25, 4.5, -5], [0.42, 2, -7]],
       o7: [[0.5, -16, -9]], o8: [[0.5, 10, -9]], o9: [[0.5, 17.5, -10]], o10: GUN_BACK,
@@ -245,7 +259,7 @@ const SPECS: Record<MotionId, Spec> = {
       d7: [[0.5, -16.4, -9.8]], d8: [[0.5, 17.6, -11]],
       d9: [[0.5, -4, -14]], d10: [[0.5, 3.5, -12.5]],
     },
-    ball: [{ t: 0.03, carrier: "o0", h: 1 }, { t: 0.35, h: 1.8 }, { t: 0.42, at: [0.8, -1.5], h: 4 },
+    ball: [{ t: 0.11, carrier: "o0", h: 1 }, { t: 0.35, h: 1.8 }, { t: 0.42, at: [0.8, -1.5], h: 4 },
       { t: 0.49, at: [1.4, -9], h: 2.2 }, { t: 0.58, at: [1.1, -11.5], h: 0 }],
     labels: ["d3", "o0"],
     flag: [6, -0.5],
@@ -265,7 +279,7 @@ const SPECS: Record<MotionId, Spec> = {
       d9: [[0.5, -6, -15]], d10: [[0.3, 6.5, -10.5], [0.6, 5.2, -9.8]],
     },
     ball: [{ t: 0.03, carrier: "o0", h: 1 }, { t: 0.3, h: 1.8 }, { t: 0.35, at: [2.5, 0], h: 2.8 },
-      { t: 0.4, carrier: "o8", h: 1.2 }, { t: 0.62, carrier: "o8", h: 0.6 }],
+      { t: 0.4, carrier: "o8", h: 1.2 }, { t: 0.6, carrier: "o8", h: 1 }, { t: 0.66, carrier: "o8", h: 0 }],
     labels: ["o0", "o8"],
   },
 
@@ -274,7 +288,7 @@ const SPECS: Record<MotionId, Spec> = {
     formation: "singleback", block: "pass",
     moves: {
       o0: [[0.1, 0.6, 3.2], [0.3, 0, 6.5], [0.42, 0.3, 7.2], [0.52, -0.2, 7.4], [0.6, -0.6, 7]],
-      o10: [[0.1, 0.9, 3.8], [0.3, 1.6, 1.2]],
+      o10: [[0.1, 0.9, 3.8], [0.3, 2.1, 2.6]],
       o4: [[0.2, -3.2, 1.8], [0.5, -3, 3.2]],
       o6: [[0.3, 5, -6], [0.5, 4, -9]], o8: [[0.3, -6, -4], [0.5, -7, -7]],
       o7: [[0.5, -15, -13]], o9: [[0.5, 13, -14]],
@@ -283,7 +297,7 @@ const SPECS: Record<MotionId, Spec> = {
       d7: [[0.5, -15.4, -14]], d8: [[0.5, 13.4, -15]],
       d9: [[0.5, -6, -15]], d10: [[0.5, 6, -15]],
     },
-    ball: [{ t: 0.03, carrier: "o0", h: 1 }, { t: 0.6, carrier: "o0", h: 0.4 }],
+    ball: [{ t: 0.03, carrier: "o0", h: 1 }, { t: 0.52, carrier: "o0", h: 1 }, { t: 0.62, carrier: "o0", h: 0 }],
     labels: ["o0", "d0"],
   },
 
@@ -321,7 +335,7 @@ const SPECS: Record<MotionId, Spec> = {
       d7: [[0.5, -15.4, -6.8]], d8: [[0.4, 17, -5], [0.6, 20, -6], [0.8, 24, -6]],
       d9: [[0.8, 6, -9]], d10: [[0.5, 11, -9], [0.8, 18, -8]],
     },
-    ball: [{ t: 0.03, carrier: "o0", h: 1 }, { t: 0.08, h: 1.1 }, { t: 0.18, carrier: "o10", h: 1 }, { t: 0.85, carrier: "o10", h: 1 }],
+    ball: [{ t: 0.03, carrier: "o0", h: 1 }, { t: 0.08, h: 1.1 }, { t: 0.18, carrier: "o10", h: 1 }, { t: 0.82, carrier: "o10", h: 1 }, { t: 0.88, carrier: "o10", h: 0 }],
     labels: ["o10", "d8"],
   },
 
@@ -345,7 +359,7 @@ const SPECS: Record<MotionId, Spec> = {
       d9: [[0.5, -6, -15]], d10: [[0.5, 6, -8.5]],
     },
     ball: [{ t: 0.03, carrier: "o0", h: 1 }, { t: 0.27, h: 1.8 }, { t: 0.3, at: [2.45, 0.6], h: 2.6 },
-      { t: 0.33, carrier: "o6", h: 1.2 }, { t: 0.52, carrier: "o6", h: 0.6 }],
+      { t: 0.33, carrier: "o6", h: 1.2 }, { t: 0.5, carrier: "o6", h: 1 }, { t: 0.56, carrier: "o6", h: 0 }],
     labels: ["o0", "o6"],
   },
 
@@ -363,7 +377,7 @@ const SPECS: Record<MotionId, Spec> = {
       d9: [[0.4, -6, -14]], d10: [[0.45, 9.5, -7]],
     },
     ball: [{ t: 0.03, carrier: "o0", h: 1 }, { t: 0.2, h: 1.8 }, { t: 0.24, at: [5.5, 1.7], h: 2.4 },
-      { t: 0.28, carrier: "o8", h: 1.2 }, { t: 0.47, carrier: "o8", h: 0.6 }],
+      { t: 0.28, carrier: "o8", h: 1.2 }, { t: 0.45, carrier: "o8", h: 1 }, { t: 0.51, carrier: "o8", h: 0 }],
     labels: ["o8", "d6"],
   },
 
@@ -378,7 +392,7 @@ const SPECS: Record<MotionId, Spec> = {
       d2: [[0.15, 0, -1.4], [0.5, 0.1, -3.4]],
       d5: [[0.5, -1.6, -3.4]], d6: [[0.3, 0.3, -3.6], [0.55, 0.6, -4.4]], d7: [[0.5, 1.8, -3.5]],
     },
-    ball: [{ t: 0.03, carrier: "o0", h: 1 }, { t: 0.6, carrier: "o0", h: 0.6 }],
+    ball: [{ t: 0.03, carrier: "o0", h: 1 }, { t: 0.55, carrier: "o0", h: 1 }, { t: 0.62, carrier: "o0", h: 0 }],
     labels: ["o0", "d2"],
   },
 
@@ -387,7 +401,7 @@ const SPECS: Record<MotionId, Spec> = {
     formation: "singleback", block: "pass",
     moves: {
       o0: [[0.1, 0.6, 3.2], [0.3, 0, 6.5]],
-      o10: [[0.1, 0.9, 3.8], [0.3, 1.6, 1.2]],
+      o10: [[0.1, 0.9, 3.8], [0.3, 2.1, 2.6]],
       o9: [[0.2, 12.5, -4], [0.38, 8.8, -8.4], [0.42, 8, -8.9], [0.6, 7, -11]],
       o7: [[0.5, -15, -12]],
       d4: [[0.4, -4, -7]], d5: [[0.4, 0.5, -7]], d6: [[0.4, 5.5, -7], [0.6, 5.5, -9.3]],
@@ -395,7 +409,7 @@ const SPECS: Record<MotionId, Spec> = {
       d9: [[0.5, -5, -15]], d10: [[0.3, 7, -12.5], [0.6, 7.6, -12]],
     },
     ball: [{ t: 0.03, carrier: "o0", h: 1 }, { t: 0.35, h: 1.8 }, { t: 0.385, at: [4, -1.2], h: 3.4 },
-      { t: 0.42, carrier: "o9", h: 1.2 }, { t: 0.62, carrier: "o9", h: 0.6 }],
+      { t: 0.42, carrier: "o9", h: 1.2 }, { t: 0.6, carrier: "o9", h: 1 }, { t: 0.66, carrier: "o9", h: 0 }],
     labels: ["o9", "d10"],
   },
 
@@ -403,14 +417,14 @@ const SPECS: Record<MotionId, Spec> = {
   "goal-line-dive": {
     formation: "goal-line", block: "run",
     moves: {
-      o0: [[0.06, -0.2, 2.6], [0.12, -0.5, 3], [0.4, 0.6, 3.4]],
+      o0: [[0.06, 0, 2.7], [0.12, 0.1, 3.2], [0.4, 0.8, 3.6]],
       o10: [[0.12, -0.3, 3.5], [0.3, -1.6, 1], [0.5, -2.3, -1.6], [0.65, -2.3, -3]],
-      o9: [[0.25, -1.9, 0.6], [0.45, -3.3, -2.6]],
+      o9: [[0.25, -1.9, 0.8], [0.35, -2.1, -0.6], [0.5, -3.3, -2.6]],
       d4: [[0.4, -2.6, -2.6], [0.65, -3.4, -3.6]],
       d5: [[0.3, -0.9, -3.6], [0.65, -2.3, -4]],
       d6: [[0.65, -0.6, -3.8]], d9: [[0.65, -2.8, -5]],
     },
-    ball: [{ t: 0.04, carrier: "o0", h: 1 }, { t: 0.12, carrier: "o10", h: 1 }, { t: 0.7, carrier: "o10", h: 0.5 }],
+    ball: [{ t: 0.04, carrier: "o0", h: 1 }, { t: 0.12, carrier: "o10", h: 1 }, { t: 0.66, carrier: "o10", h: 1 }, { t: 0.72, carrier: "o10", h: 0 }],
     labels: ["o10", "d5"],
   },
 
@@ -419,7 +433,7 @@ const SPECS: Record<MotionId, Spec> = {
     formation: "goal-line", block: "pass",
     moves: {
       o0: [[0.1, 0.6, 3], [0.3, 0, 5.5]],
-      o10: [[0.1, 0.9, 3.6], [0.3, 1.6, 1]],
+      o10: [[0.1, 0.9, 3.6], [0.3, 2.1, 2.6]],
       o6: [[0.15, 4.6, -1], [0.35, 3.8, -4], [0.45, 2.8, -5.8], [0.55, 2.6, -6.2]],
       o8: [[0.4, -8, -5]], o9: [[0.2, -1.5, 2.6]],
       d4: [[0.2, -2.6, -2.6]], d5: [[0.2, 0.3, -2.6], [0.5, 0, -4]],
@@ -428,19 +442,20 @@ const SPECS: Record<MotionId, Spec> = {
       d9: [[0.5, -1.5, -7]], d10: [[0.5, 4.4, -7.4]],
     },
     ball: [{ t: 0.03, carrier: "o0", h: 1 }, { t: 0.38, h: 1.8 }, { t: 0.415, at: [1.4, -0.2], h: 3 },
-      { t: 0.45, carrier: "o6", h: 1.2 }, { t: 0.6, carrier: "o6", h: 1 }],
+      { t: 0.45, carrier: "o6", h: 1.2 }, { t: 0.55, carrier: "o6", h: 1 }, { t: 0.62, carrier: "o6", h: 0 }],
     labels: ["o0", "o6"],
   },
 
   // Lesson 22: the extra point. Snap, hold, kick, and the ball clears the crossbar at the back of the end zone.
   "extra-point": {
-    formation: "field-goal", block: "kick",
+    formation: "field-goal", block: "kick", snap: { t: 0.1 },
     moves: {
       o10: [[0.22, -1.5, 8.8], [0.32, -0.5, 7.4], [0.45, 0.2, 6.2]],
-      d6: [[0.3, -6, 1.5], [0.45, -4.2, 4.2]], d7: [[0.3, 6, 1.5], [0.45, 4.2, 4.2]],
+      o8: [[0.2, 5.8, 2.2], [0.4, 5.9, 2.4]], o9: [[0.2, -5.8, 2.2], [0.4, -5.9, 2.4]],
+      d6: [[0.25, -6.4, 0.9], [0.4, -6.2, 1.6]], d7: [[0.25, 6.4, 0.9], [0.4, 6.2, 1.6]],
     },
     ball: [{ t: 0.1, at: [0, 0], h: 0 }, { t: 0.2, carrier: "o0", h: 0.4 }, { t: 0.26, carrier: "o0", h: 0 },
-      { t: 0.32, h: 0 }, { t: 0.55, at: [0.1, -8], h: 12 }, { t: 0.8, at: [0.2, -24.6], h: 7 }],
+      { t: 0.32, h: 0 }, { t: 0.55, at: [0.1, -8], h: 12 }, { t: 0.8, at: [0.2, -24.6], h: 7 }, { t: 0.9, at: [0.25, -25.6], h: 0 }],
     labels: ["o10", "o0"],
   },
 };
