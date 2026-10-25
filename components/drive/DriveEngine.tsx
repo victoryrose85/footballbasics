@@ -60,8 +60,8 @@ export default function DriveEngine({ children }: { children: React.ReactNode })
       if (frame || !onScreen) return;
       frame = requestAnimationFrame(() => { frame = 0; update(); });
     };
-    const visible = new IntersectionObserver(([e]) => {
-      onScreen = e.isIntersecting;
+    const visible = new IntersectionObserver((entries) => {
+      onScreen = entries[entries.length - 1].isIntersecting; // the newest, if it left and came straight back
       if (onScreen) update(); // it may have scrolled a long way while resting
     });
     // a phone turned on its side, a desktop window resized, a card that grows: the lesson tops move
@@ -73,6 +73,9 @@ export default function DriveEngine({ children }: { children: React.ReactNode })
     remeasure();
     root.classList.add("ready");
     addEventListener("scroll", onScroll, { passive: true });
+    // a phone's address bar showing or hiding changes the screen's height, and with it where lessons are read,
+    // without resizing the window or the lessons
+    addEventListener("resize", remeasure);
     visible.observe(root);
     resize.observe(win);
     resize.observe(root.querySelector<HTMLElement>(".lessons")!);
@@ -83,6 +86,7 @@ export default function DriveEngine({ children }: { children: React.ReactNode })
     return () => {
       cancelled = true;
       removeEventListener("scroll", onScroll);
+      removeEventListener("resize", remeasure);
       visible.disconnect();
       resize.disconnect();
       fonts.removeEventListener("loadingdone", remeasure);

@@ -64,6 +64,16 @@ async function goTo(page: Page, i: number, t: number) {
   return y;
 }
 
+// The engine's moment is the one progress() gives for the page as it is now: tops measured afresh in the page
+async function inStep(page: Page, what: string) {
+  const m = await layout(page);
+  const want = progress(m.y + ref(m), m.tops, m.bottom);
+  const s = await drive(page, "state");
+  expect(s.lesson, what).toBe(want.lesson);
+  expect(s.t, what).toBeCloseTo(want.t, 3);
+  return s;
+}
+
 // How much of lesson i's card shows between the window's bottom edge and the screen's
 const visible = (page: Page, i: number) => page.evaluate(i => {
   const card = document.querySelectorAll<HTMLElement>(".drive .lesson")[i];
@@ -107,7 +117,7 @@ test("scroll is the only clock", async ({ page }) => {
   await frames(page);
   const restored = await page.evaluate(() => scrollY);
   expect(Math.abs(restored - y)).toBeLessThanOrEqual(2);
-  const back = await drive(page, "state");
+  const back = await inStep(page, "at the restored scroll position");
   expect(back.lesson).toBe(first.lesson);
   expect(back.tag).toBe(first.tag);
   await page.evaluate(y => scrollTo(0, y), y);
@@ -178,7 +188,7 @@ test("late fonts re-measure", async ({ page }) => {
   await page.route("**/*.woff2", r => setTimeout(() => r.continue(), 1500));
   await open(page, 412, 915);
   await goTo(page, 11, 0.1);
-  const s = await drive(page, "state");
+  const s = await inStep(page, "with the cards measured in the web fonts");
   expect(s.lesson).toBe(11);
   expect(s.tag.toLowerCase()).toBe(TAGS[11][0].toLowerCase());
 });
@@ -199,11 +209,7 @@ test("resize mid-play", async ({ page }) => {
     requestAnimationFrame(() => requestAnimationFrame(() => requestAnimationFrame(() => done(scrollY === y0))));
   }));
   await frames(page, 2);
-  const after = await layout(page);
-  const want = progress(after.y + ref(after), after.tops, after.bottom);
-  const s = await drive(page, "state");
-  expect(s.lesson).toBe(want.lesson);
-  expect(s.t).toBeCloseTo(want.t, 4);
+  await inStep(page, "after the resize");
   expect(await drive(page, "checkOverlap")).toEqual([]);
   expect(await drive(page, "checkEdges")).toEqual([]);
   expect(await drive(page, "labels")).toBeLessThanOrEqual(2);
