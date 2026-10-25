@@ -32,6 +32,14 @@ Retired URLs 301 in `public/_redirects` (each with and without a trailing slash)
 - Diagrams are inline SVG in a `figure.diagram` with a `<title>`; tables are `table.data` inside `div.table-wrap`. Keep any logic behind them pure and unit-tested in `lib/`.
 - `tests/e2e/deeper-pages.ts` lists each page's length target (`TARGET_WORDS`). `deeper.spec.ts` checks SEO, ads, rails, chips, focus and 360px width on each; `copy-rules.spec.ts` checks the copy rules and the length. A new page needs its `TARGET_WORDS` entry.
 
+## Homepage drive
+The homepage scrolls through one drive: a sticky `section.drive` holds the field window (`.window` > `.field`, 22 `.pl[data-slot]` players, `.ball`, `.los`, `.fd`, `.dtag`, `.tips`) beside 23 `article.lesson[data-lesson]` cards. The scroll position is the only clock: there are no timers, and the engine does work only inside a rAF scheduled by a scroll event, while the section is on screen.
+- **Pure logic** is in `lib/drive/`: `rules.ts` and `plays.ts` (the play list), `formations.ts` (where the 22 stand), `motion.ts` (how they move), `pose.ts` (`poseAt(lesson, t)`, and `showsLines(scene)`, which hides the line of scrimmage and the first-down line in the kick scenes), `scroll.ts` (scroll position to lesson and `t`), `apply.ts` (pose to DOM; `applyPose(root, pose, scale, { height, lines })`, and `cameraY` keeps the window from showing past either end line), `tips.ts` and `tips-ui.ts`, `lessons.ts` (the copy), `checks.ts`.
+- **DOM contract:** `Drive.tsx` renders every dot and lesson on the server, so the lessons are readable without JavaScript. `DriveEngine.tsx` only sets custom properties and classes on that markup. It fires `drive:lesson` on `section.drive` when the lesson changes, and `bindTips` closes the open tip on it. Tips are 45 words or fewer.
+- **Rules:** every rule claim comes from the NFL rules check. Nothing is written from memory.
+- **Adding or changing a play:** edit `plays.ts`, then `motion.ts`, then the lesson copy in `lessons.ts`, and run `npm test`.
+- **Checks and speed:** on `/#check`, `window.__drive` gives `state()`, `labels()`, `checkOverlap()`, `checkEdges()` and `running()`; the e2e tests use it. `node scripts/perf.mjs "http://localhost:8787/#check" 4` (with `npm run preview` serving) scrolls the drive on a throttled phone and reports frame times. Aim for a 95th percentile of 22ms or less, at most 2% of frames over 33ms, and no work when idle.
+
 ## Copy rules
 - Warm and adult, like a knowledgeable friend explaining to a newcomer. No choppy strings of short sentences, no AI-isms.
 - Define a term before using it. Put the answer first.
