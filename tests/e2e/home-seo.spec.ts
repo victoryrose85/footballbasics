@@ -51,6 +51,7 @@ test("one H1, an H2 per lesson, canonical, title and structured data", async ({ 
   await expect(page.locator("h1")).toHaveCount(1);
   await expect(page.locator("h1")).toContainText("FootballBasics");
   await expect(page.locator("h1")).toContainText(HERO.tagline);
+  expect(await page.locator("h1").evaluate(h => h.textContent)).toContain("FootballBasics " + HERO.tagline);
   await expect(page.locator(".lessons h2")).toHaveCount(LESSONS.length);
   expect(LESSONS.length).toBe(23);
   // a lesson's "more" link appears once its guide is registered

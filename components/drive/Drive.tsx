@@ -64,7 +64,7 @@ export default function Drive() {
           </div>
         </div>
         <div className="dtag">{pose.tag}</div>
-        <div className="tips">
+        <div className="tips" aria-live="polite">
           {Object.entries(POSITION_TIPS).map(([pos, tip]) => (
             <div key={pos} className="info" id={`tip-${pos}`} hidden>
               <div className="ih">

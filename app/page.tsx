@@ -20,7 +20,7 @@ export default function HomePage() {
       <JsonLd data={homeJsonLd()} />
       <article className="sheet-body home">
         <h1>
-          <span className="wordmark">{SITE.mark[0]}<em>{SITE.mark[1]}</em></span>
+          <span className="wordmark">{SITE.mark[0]}<em>{SITE.mark[1]}</em></span>{" "}
           <span className="tag">{HERO.tagline}</span>
         </h1>
         <div className="lede">

@@ -1,16 +1,19 @@
 // Scrolls the homepage drive top to bottom on a phone-sized, CPU-throttled Chrome and reports frame timing.
 // Ad and analytics scripts are blocked, so the numbers measure the drive alone.
 // usage: node scripts/perf.mjs <url> [cpuRate]   e.g. node scripts/perf.mjs "http://localhost:8787/#check" 4  (the #check hash installs window.__drive)
-// Serve the build first: npx next build && npx wrangler dev --port 8787
+// Serve the build first: npm run build, then npm run preview (http://localhost:8787)
 // Headless Chrome runs uncapped (about 6.7ms a frame), so the frame p95 mostly measures this harness; the main-thread
 // ms per second, scrolling against idle, are the real signal. Exits 1 if a threshold fails.
 import { spawn } from "node:child_process";
-import { mkdtempSync } from "node:fs";
+import { mkdtempSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 const url = process.argv[2], rate = Number(process.argv[3] || 4), port = 9300 + Math.floor(Math.random() * 500);
-const chrome = spawn("C:/Program Files/Google/Chrome/Application/chrome.exe", [
+const SYSTEM_CHROME = "C:/Program Files/Google/Chrome/Application/chrome.exe";
+// fall back to Playwright's bundled Chromium when system Chrome is not at the usual path
+const chromePath = existsSync(SYSTEM_CHROME) ? SYSTEM_CHROME : (await import("@playwright/test")).chromium.executablePath();
+const chrome = spawn(chromePath, [
   "--headless=new", `--remote-debugging-port=${port}`, `--user-data-dir=${mkdtempSync(join(tmpdir(), "perf-"))}`,
   "--no-first-run", "--window-size=412,915", "about:blank"], { stdio: "ignore" });
 
@@ -52,7 +55,7 @@ const res = await send("Runtime.evaluate", { awaitPromise: true, returnByValue: 
   requestAnimationFrame(f);
 })` });
 const afterScroll = await metrics();
-if (!res.result?.result?.value) { console.log(JSON.stringify(res).slice(0, 800)); process.exit(1); }
+if (!res.result?.result?.value) { console.log(JSON.stringify(res).slice(0, 800)); ws.close(); chrome.kill(); process.exit(1); }
 const { gaps, scrolled, of, lesson } = res.result.result.value;
 // phase 2: park the drive on screen mid-way and leave the page alone for 4 s. No rAF loop of ours runs, so what the
 // main thread spends here is what the page itself costs while idle.

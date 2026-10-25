@@ -14,7 +14,7 @@ const TAGS: Record<number, [string, string]> = {
   11: ["2nd & 7 · opp 45", "1st & 10 · opp 36"],
   19: ["1st & goal · opp 6", "2nd & goal · opp 3"],
 };
-const LAYOUT_SIZES = [[360, 640], [412, 915], [768, 1024], [1300, 900]] as const;
+const LAYOUT_SIZES = [[360, 640], [412, 915], [768, 1024], [915, 412], [1300, 900]] as const;
 
 type State = ReturnType<DriveDebug["state"]>;
 const drive = <K extends keyof DriveDebug>(page: Page, k: K) =>
