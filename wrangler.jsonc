@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "basics-template", // the Worker's name in Cloudflare: one per site
+  "name": "footballbasics", // the Worker's name in Cloudflare: one per site
   "compatibility_date": "2026-10-01",
   "workers_dev": false,
   "preview_urls": false,
@@ -10,5 +10,5 @@
     "not_found_handling": "404-page"
   },
   // Apex only. www stays a proxied DNS record so the Cloudflare www -> apex redirect rule keeps firing.
-  "routes": [{ "pattern": "example.com", "custom_domain": true }]
+  "routes": [{ "pattern": "footballbasics.us", "custom_domain": true }]
 }

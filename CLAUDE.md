@@ -3,8 +3,7 @@
 > **If this folder is `_basics`, it's the template**, not a site. Keep it generic: no subject-specific copy, components or rules. New sites are copies of it (`SETUP.md`). A fix to something every site shares (ads, consent, SEO, the page frame) goes here as well as into the sites that already exist.
 
 ## Purpose
-<!-- Fill in for each site: what it explains, who for, and the domain. -->
-An evergreen site that explains one subject in plain English. The homepage lists every guide; each guide answers one search. Ad revenue is the whole point, so the site has to rank, load fast on phones, and show ads that AdSense accepts.
+FootballBasics.us explains American football, starting with the NFL, in plain English to a newcomer who wants to understand enough to enjoy watching a game, and wants it quickly. The homepage teaches the game by scrolling through one full drive, play by play; each guide answers one search. College football comes later, in a folder at `/college/` (not a subdomain, and NFL pages stay at the root, never under `/pro/`). Ad revenue is the whole point, so the site has to rank, load fast on phones, and show ads that AdSense accepts. The approved design is `docs/superpowers/specs/2026-10-24-footballbasics-design.md`.
 
 ## Stack
 - **Framework:** Next.js 14 App Router, TypeScript. Plain CSS, no framework: `app/globals.css` (a small base) and `app/site.css` (everything else).
@@ -37,7 +36,11 @@ Retired URLs 301 in `public/_redirects` (each with and without a trailing slash)
 - Warm and adult, like a knowledgeable friend explaining to a newcomer. No choppy strings of short sentences, no AI-isms.
 - Define a term before using it. Put the answer first.
 - No em dashes.
-<!-- Add the site's own rules here, and as regexes in SITE_RULES in tests/e2e/copy-rules.spec.ts. -->
+- Never explain football through soccer or any other sport.
+- Never mention being invited to a game, friends taking you, or "heading to a game?".
+- Say "the officials" for the crew and "the referee" for the crew chief. Name the other positions only on the penalties and replay guides.
+- Every rule claim must come from the NFL rules check (`docs/superpowers/specs/2026-10-24-nfl-rules-check.md`).
+- No NFL or team logos, team names or uniforms. The two sides are "the offense" and "the defense". Naming the NFL in the text to describe its rules is fine.
 
 ## Ads, consent and analytics
 | Unit | Where |

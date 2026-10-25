@@ -6,7 +6,10 @@ const BANNED: [string, RegExp][] = [
   ["no em dashes", /—/],
   ["no AI-isms", /\b(delve|tapestry|it'?s worth noting|game-changer|navigat(e|ing) the|whether you'?re a|dive into|unlock|in today'?s fast-paced)\b/i],
 ];
-const SITE_RULES: [string, RegExp][] = [];
+const SITE_RULES: [string, RegExp][] = [
+  ["no other sports", /\b(soccer|rugby|basketball|baseball|hockey)\b/i],
+  ["no invited-by-friends framing", /\b(invited|your friends|heading to (a|the) game)\b/i],
+];
 
 for (const path of DEEPER) test(`copy rules ${path}`, async ({ page }) => {
   await page.goto(path);

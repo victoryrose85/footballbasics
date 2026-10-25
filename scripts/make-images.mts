@@ -8,9 +8,9 @@ import { chromium } from "@playwright/test";
 import { SITE } from "../site.config.ts";
 
 const [first, second] = SITE.mark;
-const { display, body } = SITE.fonts;
+const { display, displayWeight, body, bodyWeight } = SITE.fonts;
 const family = (f: string) => f.replace(/ /g, "+");
-const fonts = `https://fonts.googleapis.com/css2?family=${family(display)}:wght@800&family=${family(body)}:wght@800&display=block`;
+const fonts = `https://fonts.googleapis.com/css2?family=${family(display)}:wght@${displayWeight}&family=${family(body)}:wght@${bodyWeight}&display=block`;
 const vars = Object.entries(SITE.colors).map(([k, v]) => `--${k}:${v}`).join(";");
 const outline = (n: number) => `${n}px ${n}px 0 var(--ink),-${n / 3}px -${n / 3}px 0 var(--ink),${n / 3}px -${n / 3}px 0 var(--ink),-${n / 3}px ${n / 3}px 0 var(--ink),${n / 3}px ${n / 3}px 0 var(--ink)`;
 
@@ -26,16 +26,16 @@ ${css}</style></head><body>${content}</body></html>`;
 // The logo and favicon: the wordmark's initials, big, on the stripes.
 const logo = html(512, 512, 128,
   `body{display:flex;align-items:center;justify-content:center}
-.ini{font:800 300px/1 '${display}',sans-serif;color:#fff;padding-top:40px;text-shadow:${outline(12)}}`,
+.ini{font:${displayWeight} 300px/1 '${display}',sans-serif;color:#fff;padding-top:40px;text-shadow:${outline(12)}}`,
   `<div class="ini">${first[0]}<em>${second[0]}</em></div>`);
 
 // The social card: the wordmark, the tagline in a pill, and the domain. Long names get a smaller wordmark.
 const chars = first.length + second.length;
 const og = html(1200, 630, 150,
   `.ln{position:absolute;inset:22px;border:7px solid rgba(255,255,255,.85);border-radius:6px}
-.wm{position:absolute;left:0;right:0;top:150px;text-align:center;font:800 ${Math.min(132, Math.floor(1900 / chars))}px/1 '${display}',sans-serif;color:#fff;text-shadow:${outline(6)}}
-.tag{position:absolute;left:50%;top:340px;transform:translateX(-50%);max-width:1040px;text-align:center;font:800 36px/1.2 '${body}';color:var(--ink);background:#fff;border:5px solid var(--ink);border-radius:999px;padding:14px 36px;box-shadow:6px 6px 0 var(--ink)}
-.url{position:absolute;left:0;right:0;bottom:46px;text-align:center;font:800 26px '${body}';color:#fff;letter-spacing:.04em;text-shadow:2px 2px 0 var(--ink)}`,
+.wm{position:absolute;left:0;right:0;top:150px;text-align:center;font:${displayWeight} ${Math.min(132, Math.floor(1900 / chars))}px/1 '${display}',sans-serif;color:#fff;text-shadow:${outline(6)}}
+.tag{position:absolute;left:50%;top:340px;transform:translateX(-50%);max-width:1040px;text-align:center;font:${bodyWeight} 36px/1.2 '${body}';color:var(--ink);background:#fff;border:5px solid var(--ink);border-radius:999px;padding:14px 36px;box-shadow:6px 6px 0 var(--ink)}
+.url{position:absolute;left:0;right:0;bottom:46px;text-align:center;font:${bodyWeight} 26px '${body}';color:#fff;letter-spacing:.04em;text-shadow:2px 2px 0 var(--ink)}`,
   `<div class="ln"></div><div class="wm">${first}<em>${second}</em></div><div class="tag">${SITE.tagline}</div><div class="url">${new URL(SITE.url).hostname}</div>`);
 
 const browser = await chromium.launch();
