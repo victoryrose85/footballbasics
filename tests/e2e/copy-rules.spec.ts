@@ -1,16 +1,8 @@
 import { test, expect } from "./fixtures";
 import { DEEPER, TARGET_WORDS } from "./deeper-pages";
+import { BANNED, SITE_RULES } from "../copy-rules";
 
-// The copy rules, checked on what a reader sees. A site adds its own (a term it never uses, say) to SITE_RULES.
-const BANNED: [string, RegExp][] = [
-  ["no em dashes", /—/],
-  ["no AI-isms", /\b(delve|tapestry|it'?s worth noting|game-changer|navigat(e|ing) the|whether you'?re a|dive into|unlock|in today'?s fast-paced)\b/i],
-];
-const SITE_RULES: [string, RegExp][] = [
-  ["no other sports", /\b(soccer|rugby|basketball|baseball|hockey)\b/i],
-  ["no invited-by-friends framing", /\b(invited|your friends|heading to (a|the) game)\b/i],
-];
-
+// The copy rules (tests/copy-rules.ts), checked on what a reader sees
 for (const path of DEEPER) test(`copy rules ${path}`, async ({ page }) => {
   await page.goto(path);
   const body = await page.locator("article.sheet-body").innerText();

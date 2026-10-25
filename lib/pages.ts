@@ -19,9 +19,9 @@ export const PAGES: PageInfo[] = [
   {
     path: "/",
     name: "Home",
-    title: `Example Basics: Plain-English Answers${S}`,
-    description: "Short, plain-English guides that each answer one question. Replace this with the homepage's description.",
-    updated: "2026-10-24",
+    title: `How Football Works: NFL Rules for Beginners${S}`,
+    description: "Learn how American football works by scrolling through one NFL drive: downs, the yellow line, penalty flags, the clock, scoring and every position.",
+    updated: "2026-10-25",
     kind: "home",
   },
   {
