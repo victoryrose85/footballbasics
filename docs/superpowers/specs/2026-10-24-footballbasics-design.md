@@ -105,7 +105,7 @@ Yard positions below use "own N" (the offense's half) and "opp N" (the opponent'
 | 6 | 2nd & 6, own 39 | Incomplete pass | 3rd & 6, own 39 | The clock stops, and the ball stays at the same spot |
 | 7 | 3rd & 6, own 39 | 🚩 False start, −5 | 3rd & 11, own 34 | Some flags stop the play before it starts |
 | 8 | 3rd & 11, own 34 | 🚩 Defensive pass interference on a deep throw, foul at opp 48 | 1st & 10, opp 48 | The ball moves to the spot of the foul, plus a new set of downs, which is why this flag can be huge |
-| 9 | 1st & 10, opp 48 | 12-yard run, wiped out by 🚩 offensive holding, −10 | 1st & 20, own 42 | The play happens, then comes back. This is the most common flag. |
+| 9 | 1st & 10, opp 48 | 12-yard run, wiped out by 🚩 offensive holding at the line of scrimmage, −10 *(changed by the rules check: the hold must happen at the line, so the penalty is enforced from the previous spot; a hold downfield would be enforced from where it happened)* | 1st & 20, own 42 | The play happens, then comes back. This is the most common flag. |
 | 10 | 1st & 20, own 42 | Short pass for 8 | 2nd & 12, own 50 | A pass caught short of the yellow line still gains yards |
 | 11 | 2nd & 12, 50 | 🚩 Defensive offside, then an incomplete pass. Offense takes the 5 yards. | 2nd & 7, opp 45 | The other team chooses to take or turn down a penalty. Past midfield, the numbers count down. |
 | 12 | 2nd & 7, opp 45 | Catch for 9 | 1st & 10, opp 36 | First down: the yellow line jumps ahead and the count resets |
