@@ -1,36 +1,41 @@
 import AdUnit from "@/components/AdUnit";
 import JsonLd from "@/components/JsonLd";
 import PageFrame from "@/components/PageFrame";
+import Drive from "@/components/drive/Drive";
 import Block from "@/components/deeper/Block";
 import Section from "@/components/deeper/Section";
+import { HERO } from "@/lib/drive/lessons";
 import { pageMetadata } from "@/lib/metadata";
-import { GUIDES, pageHeadline } from "@/lib/pages";
+import { GUIDES } from "@/lib/pages";
 import { homeJsonLd } from "@/lib/structured-data";
+import { SITE } from "@/site.config";
 
 export const metadata = pageMetadata("/");
 
-// The homepage: a short answer to "what is this site?", then every guide as a block. A site can swap this
-// for something custom later (SoccerBasics teaches the whole game on one scrolling field) once it has a reason to.
+// The homepage: the H1 and a short answer, then one drive, play by play, with the field window pinned beside
+// (desktop) or above (phone) the lessons. The guide list and the in-page ad come after the drive, never inside it.
 export default function HomePage() {
   return (
     <PageFrame>
       <JsonLd data={homeJsonLd()} />
-      <article className="sheet-body">
-        <h1>{pageHeadline("/")}</h1>
+      <article className="sheet-body home">
+        <h1>
+          <span className="wordmark">{SITE.mark[0]}<em>{SITE.mark[1]}</em></span>
+          <span className="tag">{HERO.tagline}</span>
+        </h1>
         <div className="lede">
-          <p>
-            Replace this with two or three sentences that tell a new visitor what the site explains, who it&rsquo;s
-            for, and where to start. Google often shows this text in search results, so make it a real answer rather
-            than a welcome message.
-          </p>
+          <p>{HERO.answer}</p>
         </div>
-        <Section title="The guides">
-          {GUIDES.map(p => (
-            <Block key={p.path} title={<a href={p.path}>{p.name}</a>}>
-              <p>{p.description}</p>
-            </Block>
-          ))}
-        </Section>
+        <Drive />
+        <section className="guides">
+          <Section title="The guides">
+            {GUIDES.map(p => (
+              <Block key={p.path} title={<a href={p.path}>{p.name}</a>}>
+                <p>{p.description}</p>
+              </Block>
+            ))}
+          </Section>
+        </section>
       </article>
       <AdUnit slot="inPage" />
     </PageFrame>

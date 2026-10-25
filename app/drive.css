@@ -1,0 +1,85 @@
+/* The homepage drive: the field window and the lessons beside it (desktop) or under it (phones, at 1000px and
+   below, the template's one-column breakpoint). Colors come from SITE.colors, as everywhere else.
+
+   Inside the window, field positions are in yards: --u is pixels per yard, so the window shows 24 yards of the
+   field's width (WINDOW_YARDS in lib/drive/pose.ts). The server sets each piece's --x/--y (and the field's
+   camera, --cx/--cy) from the first frame of lesson 0; the engine then writes the transforms itself. */
+
+/* until the engine has placed them, the players, ball and flag stay hidden (and with JavaScript off, for good) */
+.drive:not(.ready) :is(.players,.ball,.flag){visibility:hidden}
+.info[hidden]{display:none}
+
+/* the hero: the wordmark, then the tagline in a pill */
+.home h1 .wordmark{display:block}
+.home h1 .wordmark em{font-style:normal;color:var(--accent)}
+.home h1 .tag{display:inline-block;font:700 clamp(15px,4.2vw,18px)/1.3 var(--font-body),sans-serif;color:var(--ink);background:#fff;border:3px solid var(--ink);border-radius:999px;padding:6px 16px;margin-top:12px;box-shadow:3px 3px 0 var(--ink);text-shadow:none;text-wrap:balance}
+
+/* desktop: the window pinned in the left column, the lessons scrolling in the right */
+.drive{display:grid;grid-template-columns:45% minmax(0,1fr);gap:22px;align-items:start;margin-top:8px}
+.drive .window{position:sticky;top:16px;height:min(calc(100vh - 32px),640px);overflow:hidden;container-type:size;--u:calc(100cqw / 24);background:color-mix(in srgb,var(--stripe-b) 50%,var(--ink));border:3px solid var(--ink);border-radius:14px;box-shadow:6px 6px 0 var(--ink);z-index:2}
+.drive .lessons{padding:4px 0 20vh}
+.drive .lesson{margin:0 6px 30vh 0}
+
+/* phones and tablets: the window pinned to the top of the screen, the full width of the sheet */
+@media (max-width:1000px){
+  .drive{display:block}
+  .drive .window{top:0;height:min(42vh,300px);margin:0 -14px;border-width:3px 0;border-radius:0;box-shadow:none}
+  .drive .lessons{padding:22px 0 12vh}
+  .drive .lesson{margin-bottom:64px}
+}
+
+/* the field: all 120 yards, turf mown in 5-yard stripes, with darker end zones */
+.drive .field{--ez:color-mix(in srgb,var(--stripe-b) 72%,var(--ink));position:absolute;left:0;top:0;width:calc(53.3 * var(--u));height:calc(120 * var(--u));outline:2px solid #fff;
+  background:linear-gradient(var(--ez),var(--ez)) 0 0/100% calc(10 * var(--u)) no-repeat,linear-gradient(var(--ez),var(--ez)) 0 calc(110 * var(--u))/100% calc(10 * var(--u)) no-repeat,repeating-linear-gradient(180deg,var(--stripe-a) 0 calc(5 * var(--u)),var(--stripe-b) 0 calc(10 * var(--u)));
+  transform:translate(calc(50cqw - var(--cx) * var(--u)),calc(50cqh - var(--cy) * var(--u)))}
+/* a line every 5 yards from goal line to goal line, and the hash marks every yard */
+.drive .yardlines{position:absolute;left:0;width:100%;top:calc(10 * var(--u) - 1px);height:calc(100 * var(--u) + 2px);
+  background:repeating-linear-gradient(180deg,rgba(255,255,255,.85) 0 2px,transparent 2px var(--u)) calc(23.25 * var(--u)) 0/calc(.67 * var(--u)) 100% no-repeat,repeating-linear-gradient(180deg,rgba(255,255,255,.85) 0 2px,transparent 2px var(--u)) calc(29.39 * var(--u)) 0/calc(.67 * var(--u)) 100% no-repeat,repeating-linear-gradient(180deg,#fff 0 2px,transparent 2px calc(5 * var(--u)))}
+/* the numbers stand on their yard line, their feet toward the nearer sideline */
+.drive .num{position:absolute;left:0;top:0;font:700 calc(1.8 * var(--u))/1 var(--font-display),sans-serif;color:rgba(255,255,255,.85);transform:translate(calc(var(--x) * var(--u)),calc(var(--y) * var(--u))) translate(-50%,-50%) rotate(90deg)}
+.drive .num.r{transform:translate(calc(var(--x) * var(--u)),calc(var(--y) * var(--u))) translate(-50%,-50%) rotate(-90deg)}
+
+/* the line of scrimmage (blue) and the line to gain (yellow), across the whole field */
+.drive :is(.los,.fd){position:absolute;left:0;top:0;width:100%;pointer-events:none}
+.drive .los{height:3px;background:var(--los);transform:translateY(calc(var(--y) * var(--u) - 1.5px))}
+.drive .fd{height:4px;background:var(--first-down);transform:translateY(calc(var(--y) * var(--u) - 2px))}
+
+/* the ball, pointing downfield, and the penalty flag */
+.drive :is(.ball,.flag){position:absolute;left:0;top:0;pointer-events:none;z-index:2}
+.drive .ball{width:8px;height:12px;margin:-6px 0 0 -4px;border-radius:50%;background:var(--ball);border:1.5px solid var(--ink);transform:translate(calc(var(--x) * var(--u)),calc(var(--y) * var(--u)))}
+.drive .flag{width:10px;height:10px;margin:-5px 0 0 -5px;background:var(--flag);border:1.5px solid var(--ink);border-radius:2px;transform:translate(calc(var(--x) * var(--u)),calc(var(--y) * var(--u))) rotate(20deg)}
+
+/* the players: 0x0 anchors at their spot, a 12px dot, and a name shown only for the (at most two) labeled ones */
+.drive .players{position:absolute;inset:0;z-index:1}
+.drive .pl{position:absolute;left:0;top:0;width:0;height:0;border:0;cursor:pointer;transform:translate(calc(var(--x) * var(--u)),calc(var(--y) * var(--u)))}
+.drive .pl .dot{position:absolute;left:-6px;top:-6px;width:12px;height:12px;border-radius:50%;background:var(--offense);border:2px solid var(--ink)}
+.drive .pl.d .dot{background:var(--defense)}
+.drive .pl .nm{position:absolute;left:10px;top:-9px;white-space:nowrap;font:700 12.5px/18px var(--font-body),sans-serif;color:#fff;text-shadow:1.5px 1.5px 0 var(--ink),-1px -1px 0 var(--ink),1px -1px 0 var(--ink),-1px 1px 0 var(--ink)}
+.drive .pl:not(.lab) .nm{width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+.drive .pl:hover .dot,.drive .pl[aria-expanded="true"] .dot{background:var(--accent)}
+.drive .pl:focus-visible{outline:none}
+.drive .pl:focus-visible .dot{outline:3px solid var(--accent);outline-offset:2px}
+
+/* the down-and-distance tag, pinned in the window's corner like the TV's */
+.drive .dtag{position:absolute;left:8px;top:8px;z-index:3;font:700 14px/1 var(--font-display),sans-serif;letter-spacing:.03em;color:#fff;background:var(--ink);border:2px solid var(--ink);border-left:6px solid var(--accent);border-radius:6px;padding:5px 9px 6px;white-space:nowrap;pointer-events:none}
+
+/* a position's tip, inside the window */
+.drive .tips{position:absolute;inset:8px;z-index:4;display:flex;align-items:flex-end;pointer-events:none}
+.drive .info{pointer-events:auto;width:100%;max-width:300px;max-height:100%;overflow:auto;background:#fff;border:3px solid var(--ink);border-radius:14px;box-shadow:4px 4px 0 var(--ink);padding:10px 13px 12px;color:var(--text)}
+.drive .info .ih{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px}
+.drive .info b{font:700 17px/1.2 var(--font-display),sans-serif;color:var(--ink)}
+.drive .info i{font:700 10.5px/1 var(--font-body),sans-serif;font-style:normal;text-transform:uppercase;letter-spacing:.09em;border:2px solid var(--ink);border-radius:999px;padding:3px 8px;color:var(--ink);white-space:nowrap}
+.drive .info i.offense{background:var(--offense)}
+.drive .info i.defense{background:var(--defense)}
+.drive .info i.kicking{background:var(--accent)}
+.drive .info span{display:block;font:600 14px/1.5 var(--font-body),sans-serif}
+
+/* the lessons: the template's white blocks, each tilted a touch */
+.sheet .lesson h2{font:700 clamp(21px,5.6vw,25px)/1.15 var(--font-display),sans-serif;color:var(--ink);text-shadow:none;margin:0 0 6px}
+.sheet .lesson .k{margin-bottom:6px}
+.sheet .lesson .more{display:inline-block;margin-top:10px}
+.drive .lesson:nth-child(odd){transform:rotate(-.6deg)}
+.drive .lesson:nth-child(even){transform:rotate(.5deg)}
+@media (max-width:560px){.drive .lesson:nth-child(odd){transform:rotate(-.4deg)}.drive .lesson:nth-child(even){transform:rotate(.4deg)}}
+
+.home .guides h2{margin-top:12px}
