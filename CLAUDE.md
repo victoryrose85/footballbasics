@@ -1,0 +1,79 @@
+# Claude Instructions
+
+> **If this folder is `_basics`, it's the template**, not a site. Keep it generic: no subject-specific copy, components or rules. New sites are copies of it (`SETUP.md`). A fix to something every site shares (ads, consent, SEO, the page frame) goes here as well as into the sites that already exist.
+
+## Purpose
+<!-- Fill in for each site: what it explains, who for, and the domain. -->
+An evergreen site that explains one subject in plain English. The homepage lists every guide; each guide answers one search. Ad revenue is the whole point, so the site has to rank, load fast on phones, and show ads that AdSense accepts.
+
+## Stack
+- **Framework:** Next.js 14 App Router, TypeScript. Plain CSS, no framework: `app/globals.css` (a small base) and `app/site.css` (everything else).
+- **Deployment:** Cloudflare Workers, static assets only (`wrangler.jsonc`). `next.config.mjs` has `output: "export"`, so the site is plain files in `out/`. No server, no ISR.
+- **Per-site values:** `site.config.ts` holds the name, URL, title suffix, wordmark, contact email, Analytics ID, AdSense IDs, font names and colors. Everything else reads from it. The colors become custom properties on `<html>` (`--ink`, `--accent`, ...), so `site.css` never names a color.
+- **Fonts:** `app/fonts.ts`, through `next/font/google`, as `--font-display` and `--font-body`.
+- **Images:** `npm run images` draws `public/logo.png`, `app/icon.png` and `public/og-default.png` from the config.
+
+No environment variables are needed. The AdSense and Analytics IDs are public.
+
+## Pages
+`lib/pages.ts` lists every page with its name, title, description, "updated" date and kind (`home`, `guide`, or `site` for About and Privacy). Metadata (`pageMetadata()`), the sitemap's `lastmod` and the Article `dateModified` all read from it: when a page changes, update its date there. Unit tests hold titles to 65 characters and descriptions to 50–160.
+
+Retired URLs 301 in `public/_redirects` (each with and without a trailing slash), listed again in `tests/e2e/redirects.spec.ts`.
+
+## Deeper pages
+- Each is a server component at `app/(deeper)/<path>/page.tsx`. `/example-guide` and `/another-example` are samples to copy and then delete.
+- `components/deeper/DeeperPage.tsx` wraps every one: breadcrumbs, H1, "last updated" line, both in-article ads, the back-to-the-homepage block, the related chips and the JSON-LD (Article plus breadcrumbs for a guide, breadcrumbs only for a site page). Its props:
+  - `path`: a path in `lib/pages.ts`; the title, H1, breadcrumb name and date all come from there
+  - `intro`: the 2–3 sentence answer, shown in the lede block
+  - `related`: 3–4 registered paths, shown as chips
+  - `back` (optional): `{ title, text }` for the back block; `SITE.back` when left out
+  - `jsonLd` (optional): extra structured data, such as a DefinedTermSet for a glossary
+- Inside it, each H2 is a `<Section title>` and each white block a `<Block kicker title>`.
+- `components/PageFrame.tsx` is the frame every page shares: the rails, the sheet, the wordmark and the footer.
+- Diagrams are inline SVG in a `figure.diagram` with a `<title>`; tables are `table.data` inside `div.table-wrap`. Keep any logic behind them pure and unit-tested in `lib/`.
+- `tests/e2e/deeper-pages.ts` lists each page's length target (`TARGET_WORDS`). `deeper.spec.ts` checks SEO, ads, rails, chips, focus and 360px width on each; `copy-rules.spec.ts` checks the copy rules and the length. A new page needs its `TARGET_WORDS` entry.
+
+## Copy rules
+- Warm and adult, like a knowledgeable friend explaining to a newcomer. No choppy strings of short sentences, no AI-isms.
+- Define a term before using it. Put the answer first.
+- No em dashes.
+<!-- Add the site's own rules here, and as regexes in SITE_RULES in tests/e2e/copy-rules.spec.ts. -->
+
+## Ads, consent and analytics
+| Unit | Where |
+|---|---|
+| `rightRail` | 300×600, sticky, desktop only |
+| `leftRail` | 160×600, scrolls with the page, above 1320px |
+| `inPage` | responsive, below the homepage's guide list |
+| `inArticle` | deeper pages, after the intro and after the article |
+
+- The slot IDs are in `SITE.adSlots`. `<AdUnit slot="…" />` takes one of the names above, reserves its height so nothing shifts when the ad loads, and only asks for an ad once it's visible (a hidden rail never does).
+- No ads on the 404 page (AdSense policy). Auto ads is limited to the anchor ad in the AdSense console.
+- `ads.txt` is generated from `SITE.adClient` by `app/ads.txt/route.ts`.
+- **Consent:** Google's Privacy & messaging messages (European regulations, and US state regulations) are set up per site in AdSense. `lib/consent.ts` sets Consent Mode defaults (denied in the EEA, UK and Switzerland) before Analytics is configured. The footer's "Privacy & cookie choices" link (`PrivacyChoicesLink`) reopens the right message.
+- The privacy policy assumes no accounts, forms or other ad networks. Adding any of those means updating it.
+
+## Build and test
+```bash
+npm run dev         # local dev server at http://localhost:3000
+npm run build       # next build: static export to out/, including sitemap.xml, robots.txt and ads.txt
+npm run preview     # serve out/ locally with wrangler (http://localhost:8787)
+npm test            # unit tests (vitest)
+npm run test:e2e    # build, then Playwright against wrangler: SEO, ads/consent, deeper pages, copy rules, links, redirects
+npm run images      # redraw the logo, favicon and social card from site.config.ts
+npm run check       # fails while any template placeholder is left
+npm run deploy      # check + build + wrangler deploy
+```
+- A deploy is public: run `npm run deploy` only when the user says to.
+- Wrangler must be logged in to deploy (`npx wrangler login`).
+- Static export rules: no `export const revalidate`, no middleware, no `cookies()`/`headers()`. Route handlers only as static routes (`app/sitemap.ts`, `app/robots.ts`, `app/ads.txt/route.ts`).
+- `scripts/*.mts` run straight under Node 24 (type stripping), importing `site.config.ts` directly, so `site.config.ts` must stay plain data with no imports.
+
+## ESLint / TypeScript gotchas
+- Apostrophes in JSX text → `&apos;` (or `&rsquo;`), curly quotes → `&ldquo;` / `&rdquo;`.
+- Internal links are plain `<a href>` (full page loads) on every page, not `next/link`.
+
+## www redirect — CRITICAL
+**Do NOT add a www redirect to `next.config.mjs`.** On SoccerBasics' old Vercel hosting it caused a site-wide infinite redirect loop (both www and non-www went down): the CDN rewrote the `host` header before Next.js saw it, so `has: [{ type: 'host' }]` conditions silently failed. It also can't work now: a static export ignores `redirects()` entirely.
+
+The www → non-www redirect is a **Cloudflare redirect rule** on the site's zone. The `www` DNS record must stay proxied (orange cloud) for that rule to fire. Only the apex is attached to the Worker (`routes` in `wrangler.jsonc`).

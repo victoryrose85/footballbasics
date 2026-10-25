@@ -1,0 +1,3 @@
+# Retired URLs, served by Cloudflare as 301s. List each one with and without its trailing slash:
+# /old-page    /new-page  301
+# /old-page/   /new-page  301

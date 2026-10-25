@@ -1,0 +1,7 @@
+/* A small base in place of a CSS reset: the field and the deeper pages set everything else. */
+*,::before,::after{box-sizing:border-box}
+body,h1,h2,h3,p,ul,ol,figure{margin:0}
+ul,ol{padding:0}
+button{font:inherit;color:inherit;background:none;padding:0}
+body{-webkit-font-smoothing:antialiased}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
