@@ -53,13 +53,13 @@
 .drive .ball{width:8px;height:12px;margin:-6px 0 0 -4px;border-radius:50%;background:var(--ball);border:1.5px solid var(--ink);transform:translate(calc(var(--x) * var(--u)),calc(var(--y) * var(--u)))}
 .drive .flag{width:10px;height:10px;margin:-5px 0 0 -5px;background:var(--flag);border:1.5px solid var(--ink);border-radius:2px;transform:translate(calc(var(--x) * var(--u)),calc(var(--y) * var(--u))) rotate(20deg)}
 
-/* the players: 0x0 anchors at their spot, a 12px dot, and a name shown only for the (at most two) labeled ones.
+/* the players: a 24px button (WCAG 2.5.8 target size, and a 0x0 one could not take focus) centered on their spot, a 12px dot, and a name shown only for the (at most two) labeled ones.
    The engine moves a name off its spot here (lib/drive/apply.ts, which knows its size) to keep it clear of the others */
 .drive .players{position:absolute;inset:0;z-index:1}
-.drive .pl{position:absolute;left:0;top:0;width:0;height:0;border:0;cursor:pointer;transform:translate(calc(var(--x) * var(--u)),calc(var(--y) * var(--u)))}
-.drive .pl .dot{position:absolute;left:-6px;top:-6px;width:12px;height:12px;border-radius:50%;background:var(--offense);border:2px solid var(--ink)}
+.drive .pl{position:absolute;left:0;top:0;width:24px;height:24px;margin:-12px 0 0 -12px;padding:0;background:none;border:0;cursor:pointer;transform:translate(calc(var(--x) * var(--u)),calc(var(--y) * var(--u)))}
+.drive .pl .dot{position:absolute;left:6px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--offense);border:2px solid var(--ink)}
 .drive .pl.d .dot{background:var(--defense)}
-.drive .pl .nm{position:absolute;left:10px;top:-7.5px;white-space:nowrap;font:700 12.5px/15px var(--font-body),sans-serif;color:#fff;text-shadow:1.5px 1.5px 0 var(--ink),-1px -1px 0 var(--ink),1px -1px 0 var(--ink),-1px 1px 0 var(--ink)}
+.drive .pl .nm{position:absolute;left:22px;top:4.5px;white-space:nowrap;font:700 12.5px/15px var(--font-body),sans-serif;color:#fff;text-shadow:1.5px 1.5px 0 var(--ink),-1px -1px 0 var(--ink),1px -1px 0 var(--ink),-1px 1px 0 var(--ink)}
 .drive .pl:not(.lab) .nm{width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
 .drive .pl:hover .dot,.drive .pl[aria-expanded="true"] .dot{background:var(--accent)}
 .drive .pl:focus-visible{outline:none}
@@ -70,7 +70,9 @@
 
 /* a position's tip, inside the window */
 .drive .tips{position:absolute;inset:8px;z-index:4;display:flex;align-items:flex-end;pointer-events:none}
-.drive .info{pointer-events:auto;width:100%;max-width:300px;max-height:100%;overflow:auto;background:#fff;border:3px solid var(--ink);border-radius:14px;box-shadow:4px 4px 0 var(--ink);padding:10px 13px 12px;color:var(--text)}
+.drive .info{pointer-events:auto;width:100%;max-width:300px;max-height:100%;overflow:auto;overscroll-behavior:contain;background:#fff;border:3px solid var(--ink);border-radius:14px;box-shadow:4px 4px 0 var(--ink);padding:10px 13px 12px;color:var(--text);opacity:0;transform:translateY(6px);transition:opacity .2s,transform .2s}
+.drive .info.on{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.drive .info{transition:none}}
 .drive .info .ih{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px}
 .drive .info b{font:700 17px/1.2 var(--font-display),sans-serif;color:var(--ink)}
 .drive .info i{font:700 10.5px/1 var(--font-body),sans-serif;font-style:normal;text-transform:uppercase;letter-spacing:.09em;border:2px solid var(--ink);border-radius:999px;padding:3px 8px;color:var(--ink);white-space:nowrap}

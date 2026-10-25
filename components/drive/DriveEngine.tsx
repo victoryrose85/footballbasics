@@ -5,6 +5,7 @@ import { applyPose, measureLabels } from "@/lib/drive/apply";
 import { installChecks, type DriveDebug } from "@/lib/drive/checks";
 import { SCENES, WINDOW_YARDS, poseAt, showsLines } from "@/lib/drive/pose";
 import { progress, refLine } from "@/lib/drive/scroll";
+import { bindTips } from "@/lib/drive/tips-ui";
 
 // The phone layout (the window pinned on top of the lessons), as in drive.css
 const PHONE = "(max-width: 1000px)";
@@ -82,9 +83,11 @@ export default function DriveEngine({ children }: { children: React.ReactNode })
     fonts.addEventListener("loadingdone", remeasure);
     fonts.ready.then(() => { if (!cancelled) remeasure(); });
     installChecks(root, { state: () => state!, running: () => onScreen });
+    const unbindTips = bindTips(root);
 
     return () => {
       cancelled = true;
+      unbindTips();
       removeEventListener("scroll", onScroll);
       removeEventListener("resize", remeasure);
       visible.disconnect();
