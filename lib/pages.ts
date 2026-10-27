@@ -49,6 +49,14 @@ export const PAGES: PageInfo[] = [
     kind: "guide",
   },
   {
+    path: "/special-teams-explained",
+    name: "Special teams",
+    title: `Special Teams Explained: Kickoffs, Punts, Kicks${S}`,
+    description: "What special teams are in football: how a kickoff works, when a team punts, how a field goal is kicked, and what a fair catch and touchback mean.",
+    updated: "2026-10-27",
+    kind: "guide",
+  },
+  {
     path: "/about",
     name: "About",
     title: `About ${SITE.name}`,
