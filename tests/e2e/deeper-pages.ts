@@ -7,6 +7,7 @@ export const DEEPER: string[] = PAGES.filter(p => p.kind !== "home").map(p => p.
 export const TARGET_WORDS: Record<string, number> = {
   "/football-penalties-explained": 2300,
   "/downs-in-football": 1300,
+  "/how-scoring-works-in-football": 1400,
   "/about": 300,
   "/privacy-policy": 1100,
 };

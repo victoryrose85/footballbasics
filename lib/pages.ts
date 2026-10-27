@@ -41,6 +41,14 @@ export const PAGES: PageInfo[] = [
     kind: "guide",
   },
   {
+    path: "/how-scoring-works-in-football",
+    name: "Scoring",
+    title: `Football Scoring Explained: Every Way to Score${S}`,
+    description: "Touchdown, field goal, safety, extra point and two-point try: how many points each is worth, how it happens, and the rare ways the defense scores.",
+    updated: "2026-10-27",
+    kind: "guide",
+  },
+  {
     path: "/about",
     name: "About",
     title: `About ${SITE.name}`,
