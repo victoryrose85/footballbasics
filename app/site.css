@@ -50,6 +50,11 @@
 .sheet figure.diagram svg{width:100%;max-width:440px;height:auto;display:block;margin:0 auto}
 .sheet figure.diagram figcaption{font:700 14px/1.4 var(--font-body);text-align:center;margin-top:8px;color:var(--ink)}
 .sheet figure.diagram .call{display:inline-block;background:var(--accent);border:2px solid var(--ink);border-radius:14px;padding:3px 12px;box-shadow:2px 2px 0 var(--ink)}
+/* the penalties guide's sheet of the officials' signals: two to a row on a phone */
+.sheet .signals{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px;margin-top:14px}
+.sheet .signals figure.diagram{margin:0;border:2px solid var(--ink);border-radius:12px;padding:8px 6px 10px}
+.sheet .signals figure.diagram svg{max-width:110px}
+.sheet .signals figure.diagram figcaption{font-size:13.5px;margin-top:6px}
 
 /* tables: scroll inside their own box on a narrow phone */
 .sheet .table-wrap{overflow-x:auto;margin:12px 0;border:3px solid var(--ink);border-radius:12px}

@@ -25,6 +25,14 @@ export const PAGES: PageInfo[] = [
     kind: "home",
   },
   {
+    path: "/football-penalties-explained",
+    name: "Penalties",
+    title: `Football Penalties Explained: Flags and Signals${S}`,
+    description: "Every common NFL penalty in plain English: what the flag means, how many yards it costs, whether the down repeats, and the official's hand signal.",
+    updated: "2026-10-27",
+    kind: "guide",
+  },
+  {
     path: "/downs-in-football",
     name: "Downs",
     title: `Downs in Football Explained, With Examples${S}`,

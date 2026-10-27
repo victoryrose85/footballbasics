@@ -126,6 +126,11 @@ for (const path of DEEPER) test.describe(path, () => {
   });
 });
 
+test("penalties has 12 signal figures", async ({ page }) => {
+  await page.goto("/football-penalties-explained");
+  await expect(page.locator("div.signals figure.diagram")).toHaveCount(12);
+});
+
 test("contact anchor", async ({ page }) => {
   await page.goto("/about#contact");
   await expect(page.locator("#contact")).toBeInViewport();
