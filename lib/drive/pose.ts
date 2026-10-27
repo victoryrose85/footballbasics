@@ -40,6 +40,7 @@ const CAMERA_Y = [8, 112] as const; // keeps a phone's window inside the end lin
 const LEAD = 2; // the camera looks a couple of yards downfield, where the defense is
 const MIDDLE = FIELD_WIDTH / 2;
 const HASHES = [23.58, 29.72] as const; // the inbounds lines, 70 ft 9 in from each sideline
+const SETTLE = 0.1; // how soon a camera that starts away from the ball (the kickoff's) reaches it, so the kicker is on screen for long
 const FADE_IN = 0.12;
 const FADE_OUT = 0.86;
 const SPOTTING = 0.1; // how long the officials take to spot the ball before the snap
@@ -162,7 +163,7 @@ function poseOf(st: Stage, t: number, pan: boolean): Pose {
 
   const follow = { x: clamp(m.ball.x, ...CAMERA_X), y: clamp(m.ball.y + LEAD, ...CAMERA_Y) };
   const camera = pan ? { x: MIDDLE, y: lerp(CAMERA_Y[0], CAMERA_Y[1], smooth((t - 0.1) / 0.8)) } // one end zone to the other
-    : st.camera ? { x: lerp(st.camera.x, follow.x, smooth(t / PHASES.set[1])), y: lerp(st.camera.y, follow.y, smooth(t / PHASES.set[1])) }
+    : st.camera ? { x: lerp(st.camera.x, follow.x, smooth(t / SETTLE)), y: lerp(st.camera.y, follow.y, smooth(t / SETTLE)) }
     : follow;
 
   const flag = st.motion?.flag && t >= PHASES.whistle[0] ? onField(st.snap.ball, st.motion.flag) : null;
@@ -172,7 +173,8 @@ function poseOf(st: Stage, t: number, pan: boolean): Pose {
 // lesson: 0 to 22. t: 0 to 1 through that lesson's stretch of scroll. A lesson with two plays gives each half.
 export function poseAt(lesson: number, t: number): Pose {
   const i = clamp(Math.floor(lesson) || 0, 0, SCENES.length - 1);
-  const tt = t > 0 ? Math.min(t, 1) : 0;
+  let tt = t > 0 ? Math.min(t, 1) : 0;
+  if (SCENES[i] === "kickoff") tt = tt < 0.5 ? tt * 0.6 : 0.3 + (tt - 0.5) * 1.4; // slow the run-up, so the kicker (and his hint) stay on screen longer
   const stages = STAGES[i];
   const j = Math.min(stages.length - 1, Math.floor(tt * stages.length));
   return poseOf(stages[j], tt * stages.length - j, SCENES[i] === "field");

@@ -39,9 +39,17 @@
 /* a line every 5 yards from goal line to goal line, and the hash marks every yard */
 .drive .yardlines{position:absolute;left:0;width:100%;top:calc(10 * var(--u) - 1px);height:calc(100 * var(--u) + 2px);
   background:repeating-linear-gradient(180deg,rgba(255,255,255,.85) 0 2px,transparent 2px var(--u)) calc(23.25 * var(--u)) 0/calc(.67 * var(--u)) 100% no-repeat,repeating-linear-gradient(180deg,rgba(255,255,255,.85) 0 2px,transparent 2px var(--u)) calc(29.39 * var(--u)) 0/calc(.67 * var(--u)) 100% no-repeat,repeating-linear-gradient(180deg,#fff 0 2px,transparent 2px calc(5 * var(--u)))}
-/* the numbers stand on their yard line, their feet toward the nearer sideline */
+/* the numbers stand on their yard line, their feet toward the nearer sideline. Their layer slides along with the
+   camera (lib/drive/apply.ts), so the window always shows a column of them either side of the middle */
+.drive .nums{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none}
 .drive .num{position:absolute;left:0;top:0;font:700 calc(1.8 * var(--u))/1 var(--font-display),sans-serif;color:rgba(255,255,255,.85);transform:translate(calc(var(--x) * var(--u)),calc(var(--y) * var(--u))) translate(-50%,-50%) rotate(90deg)}
 .drive .num.r{transform:translate(calc(var(--x) * var(--u)),calc(var(--y) * var(--u))) translate(-50%,-50%) rotate(-90deg)}
+
+/* the goalposts, one at each end line: a crossbar with an upright at each end, seen from above */
+.drive .post{position:absolute;left:0;top:0;width:calc(var(--w) * var(--u));height:5px;margin-top:-2.5px;background:var(--first-down);border:1.5px solid var(--ink);box-sizing:border-box;border-radius:2px;pointer-events:none;transform:translate(calc(var(--x) * var(--u)),calc(var(--y) * var(--u)))}
+.drive .post i{position:absolute;top:-3px;width:11px;height:11px;border-radius:50%;background:var(--first-down);border:2px solid var(--ink);box-sizing:border-box}
+.drive .post i:first-child{left:-5px}
+.drive .post i:last-child{right:-5px}
 
 /* the line of scrimmage (blue) and the line to gain (yellow), across the whole field */
 .drive :is(.los,.fd){position:absolute;left:0;top:0;width:100%;pointer-events:none}
@@ -59,14 +67,22 @@
 .drive .pl{position:absolute;left:0;top:0;width:24px;height:24px;margin:-12px 0 0 -12px;padding:0;background:none;border:0;cursor:pointer;transform:translate(calc(var(--x) * var(--u)),calc(var(--y) * var(--u)))}
 .drive .pl .dot{position:absolute;left:6px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--offense);border:2px solid var(--ink)}
 .drive .pl.d .dot{background:var(--defense)}
-.drive .pl .nm{position:absolute;left:22px;top:4.5px;white-space:nowrap;font:700 12.5px/15px var(--font-body),sans-serif;color:#fff;text-shadow:1.5px 1.5px 0 var(--ink),-1px -1px 0 var(--ink),1px -1px 0 var(--ink),-1px 1px 0 var(--ink)}
+.drive .pl .nm{z-index:1;position:absolute;left:22px;top:4.5px;white-space:nowrap;font:700 12.5px/15px var(--font-body),sans-serif;color:#fff;text-shadow:1.5px 1.5px 0 var(--ink),-1px -1px 0 var(--ink),1px -1px 0 var(--ink),-1px 1px 0 var(--ink)}
 .drive .pl:not(.lab) .nm{width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
 .drive .pl:hover .dot,.drive .pl[aria-expanded="true"] .dot{background:var(--accent)}
+/* the players the lesson is talking about right now get a ring, and the rest step back a little */
+.drive .pl::after{content:"";position:absolute;inset:0;border-radius:50%;border:3px solid var(--accent);box-shadow:0 0 0 1.5px var(--ink),inset 0 0 0 1.5px var(--ink);opacity:0;transform:scale(.6);transition:opacity .2s,transform .2s;pointer-events:none}
+.drive .pl.hi::after{opacity:1;transform:none}
+.drive.focus .pl:not(.hi) .dot{opacity:.5}
+@media (prefers-reduced-motion:reduce){.drive .pl::after{transition:none}}
 .drive .pl:focus-visible{outline:none}
 .drive .pl:focus-visible .dot{outline:3px solid var(--accent);outline-offset:2px}
 
 /* the down-and-distance tag, pinned in the window's corner like the TV's */
 .drive .dtag{position:absolute;left:8px;top:8px;z-index:3;font:700 14px/1 var(--font-display),sans-serif;letter-spacing:.03em;color:#fff;background:var(--ink);border:2px solid var(--ink);border-left:6px solid var(--accent);border-radius:6px;padding:5px 9px 6px;white-space:nowrap;pointer-events:none}
+
+/* "Tap players to see more", following the kicker (lib/drive/apply.ts places it) */
+.drive .hint{position:absolute;left:0;top:0;z-index:3;opacity:0;white-space:nowrap;pointer-events:none;font:700 12.5px/1 var(--font-body),sans-serif;color:var(--ink);background:#fff;border:2px solid var(--ink);border-radius:999px;padding:5px 11px 6px;box-shadow:2px 2px 0 var(--ink)}
 
 /* a position's tip, inside the window */
 /* every panel shares one cell at the bottom, so a fading one never sits beside the one arriving */
@@ -88,6 +104,13 @@
 /* the lessons: the template's white blocks, each tilted a touch */
 .sheet .lesson h2{font:700 clamp(21px,5.6vw,25px)/1.15 var(--font-display),sans-serif;color:var(--ink);text-shadow:none;margin:0 0 6px}
 .sheet .lesson .k{margin-bottom:6px}
+/* the answer first, then short beats; the one being read is marked, and the window rings the players it names */
+.sheet .lesson p.lead{font-weight:700}
+.sheet .lesson ul.beats{margin-top:10px}
+.sheet .lesson .beats li{border-radius:8px;padding:2px 6px;margin-left:-6px;margin-right:-6px;transition:background-color .2s}
+.sheet .lesson .beats li+li{margin-top:4px}
+.sheet .lesson .beats li.on{background:color-mix(in srgb,var(--accent) 40%,#fff)}
+@media (prefers-reduced-motion:reduce){.sheet .lesson .beats li{transition:none}}
 .sheet .lesson .more{display:inline-block;margin-top:10px}
 .drive .lesson:nth-child(odd){transform:rotate(-.6deg)}
 .drive .lesson:nth-child(even){transform:rotate(.5deg)}

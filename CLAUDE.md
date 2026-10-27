@@ -3,7 +3,7 @@
 > **If this folder is `_basics`, it's the template**, not a site. Keep it generic: no subject-specific copy, components or rules. New sites are copies of it (`SETUP.md`). A fix to something every site shares (ads, consent, SEO, the page frame) goes here as well as into the sites that already exist.
 
 ## Purpose
-FootballBasics.us explains American football, starting with the NFL, in plain English to a newcomer who wants to understand enough to enjoy watching a game, and wants it quickly. The homepage teaches the game by scrolling through one full drive, play by play; each guide answers one search. College football comes later, in a folder at `/college/` (not a subdomain, and NFL pages stay at the root, never under `/pro/`). Ad revenue is the whole point, so the site has to rank, load fast on phones, and show ads that AdSense accepts. The approved design is `docs/superpowers/specs/2026-10-24-footballbasics-design.md`.
+FootballBasics.us explains football, starting with the NFL, in plain English to a newcomer who wants to understand enough to enjoy watching a game, and wants it quickly. The homepage teaches the game by scrolling through one full drive, play by play; each guide answers one search. College football comes later, in a folder at `/college/` (not a subdomain, and NFL pages stay at the root, never under `/pro/`). Ad revenue is the whole point, so the site has to rank, load fast on phones, and show ads that AdSense accepts. The approved design is `docs/superpowers/specs/2026-10-24-footballbasics-design.md`.
 
 ## Stack
 - **Framework:** Next.js 14 App Router, TypeScript. Plain CSS, no framework: `app/globals.css` (a small base) and `app/site.css` (everything else).
@@ -35,6 +35,9 @@ Retired URLs 301 in `public/_redirects` (each with and without a trailing slash)
 ## Homepage drive
 The homepage scrolls through one drive: a sticky `section.drive` holds the field window (`.window` > `.field`, 22 `.pl[data-slot]` players, `.ball`, `.los`, `.fd`, `.dtag`, `.tips`) beside 23 `article.lesson[data-lesson]` cards. The scroll position is the only clock: there are no timers, and per-frame work happens only in a rAF scheduled by a scroll event, while the section is on screen.
 - **Pure logic** is in `lib/drive/`: `rules.ts` and `plays.ts` (the play list), `formations.ts` (where the 22 stand), `motion.ts` (how they move), `pose.ts` (`poseAt(lesson, t)`, and `showsLines(scene)`, which hides the line of scrimmage and the first-down line in the opening pan and the kickoffs), `scroll.ts` (scroll position to lesson and `t`), `apply.ts` (pose to DOM; `applyPose(root, pose, scale, { height, lines })`, and `cameraY` keeps the window from showing past either end line), `tips.ts` and `tips-ui.ts`, `lessons.ts` (the copy), `checks.ts`.
+- **Lesson shape:** each lesson in `lessons.ts` is a `lead` (the answer, one or two sentences) and 3 to 6 `beats` (short bullets, 88 words in all at most). A beat's `focus` lists the slots (`o0`..`d10`) it talks about. As the reader scrolls a lesson its beats take turns (`DriveEngine` shares the lesson's `t` out between them): the current `li` gets `.on` and those players get `.hi`, a ring, while the rest dim (`.drive.focus`). Slot ids depend on the formation (`formations.ts`), so check them when a play changes.
+- **Hint:** on the first kickoff a pill follows the kicker ("Mouseover players to see more" with a mouse, "Tap players to see more" on touch) and fades once the kicker leaves the window. `applyPose` places it.
+- **Field furniture:** the yard numbers sit in `.nums`, which slides with the camera so a column of them always shows; the goalposts (`.post`) stand just inside each end line, where the extra point crosses between them.
 - **DOM contract:** `Drive.tsx` renders every dot and lesson on the server, so the lessons are readable without JavaScript. `DriveEngine.tsx` only sets custom properties and classes on that markup. It fires `drive:lesson` on `section.drive` when the lesson changes, and `bindTips` closes the open tip on it. Tips are 45 words or fewer.
 - **Rules:** every rule claim comes from the NFL rules check. Nothing is written from memory.
 - **Adding or changing a play:** edit `plays.ts`, then `motion.ts`, then the lesson copy in `lessons.ts`, and run `npm test`.
@@ -44,6 +47,7 @@ The homepage scrolls through one drive: a sticky `section.drive` holds the field
 - Warm and adult, like a knowledgeable friend explaining to a newcomer. No choppy strings of short sentences, no AI-isms.
 - Define a term before using it. Put the answer first.
 - No em dashes.
+- Call it "football", never "American football", unless the same sentence or paragraph has to tell it apart from soccer.
 - Never explain football through soccer or any other sport.
 - Never mention being invited to a game, friends taking you, or "heading to a game?".
 - Say "the officials" for the crew and "the referee" for the crew chief. Name the other positions only on the penalties and replay guides.

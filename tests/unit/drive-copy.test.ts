@@ -1,8 +1,8 @@
 // @vitest-environment jsdom
 import { describe, expect, it } from "vitest";
-import { HERO, LESSONS } from "@/lib/drive/lessons";
+import { HERO, LESSONS, lessonHtml } from "@/lib/drive/lessons";
 import { POSITION_TIPS } from "@/lib/drive/tips";
-import { FORMATIONS, KICKOFF_AWAY, type Position } from "@/lib/drive/formations";
+import { FORMATIONS, KICKOFF_AWAY, SLOTS, type Position } from "@/lib/drive/formations";
 import { PLAYS, situations } from "@/lib/drive/plays";
 import { SCENES } from "@/lib/drive/pose";
 import { downTag, spotLabel, type Situation } from "@/lib/drive/rules";
@@ -52,11 +52,20 @@ describe("the lessons", () => {
     }
   });
 
-  it("keeps each lesson between 60 and 140 words", () => {
+  it("keeps each lesson short: a lead of one or two sentences, then 3 to 6 beats, 30 to 88 words in all", () => {
     LESSONS.forEach((l, i) => {
-      expect(words(l.html), `lesson ${i}`).toBeGreaterThanOrEqual(60);
-      expect(words(l.html), `lesson ${i}`).toBeLessThanOrEqual(140);
+      const total = lessonHtml(l).reduce((n, h) => n + words(h), 0);
+      expect(total, `lesson ${i}`).toBeGreaterThanOrEqual(30);
+      expect(total, `lesson ${i}`).toBeLessThanOrEqual(88);
+      expect(l.beats.length, `lesson ${i}`).toBeGreaterThanOrEqual(3);
+      expect(l.beats.length, `lesson ${i}`).toBeLessThanOrEqual(6);
+      expect(text(l.lead).split(/(?<=[.?!])\s+/).length, `lesson ${i} lead`).toBeLessThanOrEqual(2);
+      for (const b of l.beats) expect(words(b.html), `lesson ${i}: ${text(b.html)}`).toBeLessThanOrEqual(45);
     });
+  });
+
+  it("highlights only real players", () => {
+    for (const l of LESSONS) for (const b of l.beats) for (const slot of b.focus ?? []) expect(SLOTS, l.heading).toContain(slot);
   });
 });
 
@@ -79,7 +88,8 @@ describe("the copy rules", () => {
   const strings: [string, string][] = [
     ["HERO.tagline", HERO.tagline], ["HERO.answer", HERO.answer],
     ...LESSONS.flatMap((l, i): [string, string][] => [
-      [`lesson ${i} kicker`, l.kicker], [`lesson ${i} heading`, l.heading], [`lesson ${i} html`, l.html],
+      [`lesson ${i} kicker`, l.kicker], [`lesson ${i} heading`, l.heading],
+      ...lessonHtml(l).map((h, j): [string, string] => [`lesson ${i} text ${j}`, h]),
       ...(l.more ? [[`lesson ${i} more`, l.more.label] as [string, string]] : []),
     ]),
     ...POSITIONS.flatMap((p): [string, string][] => [[`${p} title`, POSITION_TIPS[p].title], [`${p} tip`, POSITION_TIPS[p].html]]),

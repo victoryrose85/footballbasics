@@ -6,7 +6,7 @@ export const SITE = {
   url: "https://footballbasics.us", // the canonical origin: https, no www, no trailing slash
   titleSuffix: " | FootballBasics", // ends every page title in lib/pages.ts; H1s drop it
   mark: ["Football", "Basics"], // the wordmark; the second half is drawn in the accent color
-  tagline: "How American football works, one play at a time.", // the pill on the social card
+  tagline: "How football works, one play at a time.", // the pill on the social card
   contactEmail: "retailvalue@gmail.com",
   disclaimer: "Not affiliated with the NFL or any of its teams.", // the footer's last line
 

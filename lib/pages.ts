@@ -20,7 +20,7 @@ export const PAGES: PageInfo[] = [
     path: "/",
     name: "Home",
     title: `How Football Works: NFL Rules for Beginners${S}`,
-    description: "Learn how American football works by scrolling through one NFL drive: downs, the yellow line, penalty flags, the clock, scoring and every position.",
+    description: "Learn how football works by scrolling through one NFL drive: downs, the yellow line, penalty flags, the clock, scoring and every position.",
     updated: "2026-10-25",
     kind: "home",
   },

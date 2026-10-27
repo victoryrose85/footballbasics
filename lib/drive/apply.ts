@@ -8,7 +8,9 @@ import { FIELD_LENGTH, WINDOW_YARDS, type Pose } from "./pose";
 
 export interface Box { x0: number; y0: number; x1: number; y1: number }
 // height: the window's inner height in px. lines: whether this lesson's scene draws the blue and yellow lines.
-export interface View { height: number; lines: boolean }
+// focus: the players the lesson is talking about right now, who get a ring. hint: whether the "tap players" hint
+// follows the kicker (the first kickoff only).
+export interface View { height: number; lines: boolean; focus: SlotId[]; hint: boolean }
 
 const DOT = 7; // half a dot's 12px box, plus a pixel of air
 const NAME_H = 15; // a name's line height (drive.css)
@@ -17,6 +19,7 @@ const STRAY = 0.3; // what a pixel farther from its dot costs a name, against 10
 const ASTRAY = 40; // and what it costs when another player's dot is nearer to it than its own
 const EDGE = 2; // how close a name may come to the window's edge
 const SHADOW = 2; // the names' outline reaches a little past their text
+const MIDDLE = 26.65; // the field's middle, where the yard numbers' layer rests (Drive.tsx)
 
 // Where a name can go, as its top-left corner from the center of its dot (w: the name's width), which way that is,
 // and how far it strays from its dot. Beside the dot (level, or a step up or down), or above or below it (centered,
@@ -76,9 +79,10 @@ export function placeLabel(at: [number, number], w: number, obstacles: Box[], bo
   return { box: { x0: box.x0 + sx, y0: box.y0 + sy, x1: box.x1 + sx, y1: box.y1 + sy } };
 }
 
-interface Player { el: HTMLElement; nm: HTMLElement; slot: SlotId; pos: string; lab: boolean; shown: boolean | null }
+interface Player { el: HTMLElement; nm: HTMLElement; slot: SlotId; pos: string; lab: boolean; hi: boolean; shown: boolean | null }
 interface Store {
-  field: HTMLElement; los: HTMLElement; fd: HTMLElement; flag: HTMLElement; ball: HTMLElement; tag: HTMLElement;
+  field: HTMLElement; nums: HTMLElement; los: HTMLElement; fd: HTMLElement; flag: HTMLElement; ball: HTMLElement; tag: HTMLElement;
+  hint: HTMLElement; hintSize: { w: number; h: number }; focused: boolean;
   players: Player[]; titles: Map<string, string>; written: WeakMap<HTMLElement, { transform?: string; opacity?: string }>;
   text: Text | null;
 }
@@ -97,10 +101,10 @@ function store(root: HTMLElement): Store {
     titles.set(info.id.replace(/^tip-/, ""), info.querySelector(".ih b")?.textContent ?? "");
   });
   s = {
-    field: one(".field"), los: one(".los"), fd: one(".fd"), flag: one(".flag"), ball: one(".ball"), tag: one(".dtag"),
+    field: one(".field"), nums: one(".nums"), hint: one(".hint"), hintSize: { w: 170, h: 24 }, focused: false, los: one(".los"), fd: one(".fd"), flag: one(".flag"), ball: one(".ball"), tag: one(".dtag"),
     players: Array.from(root.querySelectorAll<HTMLElement>("button.pl")).map((el) => ({
       el, nm: el.querySelector<HTMLElement>(".nm")!, slot: el.dataset.slot as SlotId,
-      pos: (el.getAttribute("aria-controls") ?? "").replace(/^tip-/, ""), lab: el.classList.contains("lab"), shown: null,
+      pos: (el.getAttribute("aria-controls") ?? "").replace(/^tip-/, ""), lab: el.classList.contains("lab"), hi: false, shown: null,
     })),
     titles, written: new WeakMap(), text: null,
   };
@@ -132,6 +136,7 @@ export function measureLabels(root: HTMLElement): void {
   const tagText = measure(fontOf(t), spacing);
   const pad = t.offsetWidth - tagText(t.textContent ?? "");
   const [x0, y0, h] = [t.offsetLeft, t.offsetTop, t.offsetHeight];
+  s.hintSize = { w: s.hint.offsetWidth || s.hintSize.w, h: s.hint.offsetHeight || s.hintSize.h };
   s.text = { name: (n) => name(n) + SHADOW, tag: (text) => ({ x0, y0, x1: x0 + tagText(text) + pad, y1: y0 + h }) };
 }
 
@@ -154,6 +159,8 @@ export function applyPose(root: HTMLElement, pose: Pose, scale: number, view: Vi
   const ox = W / 2 - pose.camera.x * scale;
   const oy = H / 2 - cameraY(pose.camera.y, scale, H) * scale;
   write(s, s.field, "transform", `translate(${px(ox)}px,${px(oy)}px)`);
+  // the yard numbers keep their place in the window as the camera moves sideways
+  write(s, s.nums, "transform", `translateX(${px((pose.camera.x - MIDDLE) * scale)}px)`);
 
   write(s, s.los, "transform", `translateY(${px(pose.los * scale - 1.5)}px)`);
   write(s, s.los, "opacity", view.lines ? "1" : "0");
@@ -176,6 +183,8 @@ export function applyPose(root: HTMLElement, pose: Pose, scale: number, view: Vi
     const x = ox + q.x * scale, y = oy + q.y * scale;
     const shown = q.opacity > 0 && x > -DOT && x < W + DOT && y > -DOT && y < H + DOT;
     if (shown) inView.set(p.slot, [x, y]);
+    const hi = shown && view.focus.includes(p.slot);
+    if (hi !== p.hi) { p.hi = hi; p.el.classList.toggle("hi", hi); }
     if (shown !== p.shown) { // only the players you can see can be reached with Tab
       p.shown = shown;
       p.el.tabIndex = shown ? 0 : -1;
@@ -211,6 +220,34 @@ export function applyPose(root: HTMLElement, pose: Pose, scale: number, view: Vi
     placed.push(box);
     labeled.set(slot, box);
   }
+  const focused = view.focus.length > 0;
+  if (focused !== s.focused) { s.focused = focused; root.classList.toggle("focus", focused); }
+
+  // the hint follows the kicker, while there is a kicker in view
+  // (only while his dot is well inside the window, so the hint never sits half cut off at an edge)
+  const kicker = view.hint ? s.players.find((p) => p.pos === "k" && inView.has(p.slot)) : undefined;
+  const kicked = kicker && inView.get(kicker.slot);
+  const kickAt = kicked && kicked[0] > bounds.x0 + DOT && kicked[0] < bounds.x1 - DOT && kicked[1] > bounds.y0 + DOT && kicked[1] < bounds.y1 - DOT ? kicked : undefined;
+  if (kickAt) {
+    const { w, h } = s.hintSize;
+    const air = DOT + 6;
+    const tries: [number, number][] = [
+      [kickAt[0] - w / 2, kickAt[1] - air - h], [kickAt[0] - w / 2, kickAt[1] + air],
+      [kickAt[0] - w / 2, kickAt[1] - air - h - 28], [kickAt[0] - w / 2, kickAt[1] + air + 28],
+    ];
+    let best = { box: bounds, score: Infinity };
+    for (const [x0, y0] of tries) {
+      const top = clamp(y0, bounds.y0, Math.max(bounds.y0, bounds.y1 - h));
+      const box = { x0: clamp(x0, bounds.x0, Math.max(bounds.x0, bounds.x1 - w)), y0: top, x1: 0, y1: top + h };
+      box.x1 = box.x0 + w;
+      let score = overflow(box, bounds) * 1000;
+      for (const o of [...placed, dot(kickAt)]) score += area(box, o) * 10;
+      if (score < best.score) best = { box, score };
+    }
+    write(s, s.hint, "transform", `translate(${px(best.box.x0)}px,${px(best.box.y0)}px)`);
+  }
+  write(s, s.hint, "opacity", kickAt ? "1" : "0");
+
   for (const p of s.players) {
     const box = labeled.get(p.slot);
     const me = inView.get(p.slot);

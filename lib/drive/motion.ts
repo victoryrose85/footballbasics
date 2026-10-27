@@ -446,7 +446,7 @@ const SPECS: Record<MotionId, Spec> = {
     labels: ["o0", "o6"],
   },
 
-  // Lesson 22: the extra point. Snap, hold, kick, and the ball clears the crossbar at the back of the end zone.
+  // Lesson 22: the extra point. Snap, hold, kick, and the ball clears the crossbar, which Drive.tsx draws at y = 118.8, between the uprights.
   "extra-point": {
     formation: "field-goal", block: "kick", snap: { t: 0.1 },
     moves: {
@@ -455,7 +455,7 @@ const SPECS: Record<MotionId, Spec> = {
       d6: [[0.25, -6.4, 0.9], [0.4, -6.2, 1.6]], d7: [[0.25, 6.4, 0.9], [0.4, 6.2, 1.6]],
     },
     ball: [{ t: 0.1, at: [0, 0], h: 0 }, { t: 0.2, carrier: "o0", h: 0.4 }, { t: 0.26, carrier: "o0", h: 0 },
-      { t: 0.32, h: 0 }, { t: 0.55, at: [0.1, -8], h: 12 }, { t: 0.8, at: [0.2, -24.6], h: 7 }, { t: 0.9, at: [0.25, -25.6], h: 0 }],
+      { t: 0.32, h: 0 }, { t: 0.55, at: [0.1, -8], h: 12 }, { t: 0.8, at: [0.2, -23.8], h: 7 }, { t: 0.9, at: [0.25, -24.9], h: 0 }],
     labels: ["o10", "o0"],
   },
 };

@@ -1,7 +1,7 @@
 import type { Page } from "@playwright/test";
 import { test, expect } from "./fixtures";
 import { BASE_URL, GUIDES, PAGES, getPage } from "../../lib/pages";
-import { HERO, LESSONS } from "../../lib/drive/lessons";
+import { HERO, LESSONS, lessonHtml } from "../../lib/drive/lessons";
 import { POSITION_TIPS } from "../../lib/drive/tips";
 import { BANNED, SITE_RULES } from "../copy-rules";
 
@@ -33,7 +33,7 @@ test("every lesson, tip and guide link is in the HTML Google reads", async ({ pa
   const tips = Object.values(POSITION_TIPS);
   const expected = await decode(page, [
     HERO.answer,
-    ...LESSONS.flatMap(l => [l.heading, l.html]),
+    ...LESSONS.flatMap(l => [l.heading, ...lessonHtml(l)]),
     ...tips.flatMap(t => [t.title, t.html]),
   ]);
   for (const t of expected) expect(body).toContain(t);

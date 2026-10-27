@@ -56,7 +56,7 @@ test("tips open on a tap and close on a tap elsewhere", async ({ page }) => {
   await insideWindow(page, "#tip-qb");
   expect(norm(await page.locator("#tip-qb span").innerText())).toBe(norm(text(POSITION_TIPS.qb.html)));
 
-  await page.locator(".drive .lesson p").nth(4).click();
+  await page.locator(".drive .lesson p.lead").nth(4).click();
   await expect(page.locator("#tip-qb")).toBeHidden();
 
   const def = page.locator("button.pl.d:not([aria-hidden])").first();

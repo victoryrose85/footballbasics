@@ -5,6 +5,7 @@
 /* the page and its rails */
 .page{background:var(--page);min-height:100vh;line-height:normal}
 .page-grid{display:grid;grid-template-columns:160px minmax(0,720px) 300px;gap:24px;justify-content:center;max-width:1300px;margin:0 auto;padding:14px 24px 40px;align-items:start}
+.rail{position:relative;z-index:3;min-width:0}
 .rail.right{position:sticky;top:16px}
 @media (max-width:1320px){.page-grid{grid-template-columns:minmax(0,720px) 300px}.rail.left{display:none}}
 @media (max-width:1000px){.page-grid{grid-template-columns:1fr;padding:0 0 40px}.rail{display:none}}

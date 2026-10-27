@@ -19,8 +19,14 @@ const pose = poseAt(0, 0);
 // The opening pan shows no blue or yellow line (ruling R8)
 const lines = showsLines(SCENES[0]);
 
-// The yard numbers, 10 to 50 and back, on both sides of the field
+// The yard numbers, 10 to 50 and back. They stand a fixed distance either side of the window's middle (not on the
+// field's sidelines, which a 24-yard window seldom shows): the engine slides their layer along with the camera.
 const NUMBERS = [20, 30, 40, 50, 60, 70, 80, 90, 100].map((y) => ({ y, n: Math.min(y - 10, 110 - y) }));
+const NUMBER_X = 9.5; // yards from the middle of the window
+const MIDDLE = 26.65;
+// The goalposts: a crossbar 18 ft 6 in (6.17 yd) wide, a little inside each end line so the window shows it
+const POST_W = 6.17;
+const POST_Y = [1.2, 118.8];
 
 const SIDE_LABEL = { offense: "Offense", defense: "Defense", kicking: "Kicking plays" } as const;
 const registered = new Set(PAGES.map((p) => p.path));
@@ -32,10 +38,15 @@ export default function Drive() {
       <div className="window">
         <div className="field" style={{ "--cx": r2(pose.camera.x), "--cy": r2(pose.camera.y) } as React.CSSProperties}>
           <div className="yardlines" />
-          {NUMBERS.flatMap(({ y, n }) => [
-            <span key={`l${y}`} className="num l" style={at(10, y)} aria-hidden="true">{n}</span>,
-            <span key={`r${y}`} className="num r" style={at(43.3, y)} aria-hidden="true">{n}</span>,
-          ])}
+          <div className="nums" aria-hidden="true">
+            {NUMBERS.flatMap(({ y, n }) => [
+              <span key={`l${y}`} className="num l" style={at(MIDDLE - NUMBER_X, y)}>{n}</span>,
+              <span key={`r${y}`} className="num r" style={at(MIDDLE + NUMBER_X, y)}>{n}</span>,
+            ])}
+          </div>
+          {POST_Y.map((y) => (
+            <div key={y} className="post" style={{ ...at(MIDDLE - POST_W / 2, y), "--w": POST_W } as React.CSSProperties} aria-hidden="true"><i /><i /></div>
+          ))}
           <div className="los" style={{ ...at(0, pose.los), opacity: lines ? 1 : 0 }} />
           <div className="fd" style={{ ...at(0, pose.firstDown ?? 0), opacity: lines && pose.firstDown !== null ? 1 : 0 }} />
           <div className="flag" hidden />
@@ -64,6 +75,7 @@ export default function Drive() {
           </div>
         </div>
         <div className="dtag">{pose.tag}</div>
+        <div className="hint" aria-hidden="true">Tap players to see more</div>
         <div className="tips" aria-live="polite">
           {Object.entries(POSITION_TIPS).map(([pos, tip]) => (
             <div key={pos} className="info" id={`tip-${pos}`} hidden>
@@ -81,7 +93,10 @@ export default function Drive() {
           <article key={i} className="lesson block" data-lesson={i}>
             <div className="k">{l.kicker}</div>
             <h2 dangerouslySetInnerHTML={html(l.heading)} />
-            <p dangerouslySetInnerHTML={html(l.html)} />
+            <p className="lead" dangerouslySetInnerHTML={html(l.lead)} />
+            <ul className="beats">
+              {l.beats.map((b, j) => <li key={j} data-focus={(b.focus ?? []).join(" ")} dangerouslySetInnerHTML={html(b.html)} />)}
+            </ul>
             {l.more && registered.has(l.more.href) && (
               <a className="more" href={l.more.href} dangerouslySetInnerHTML={html(`${l.more.label} &rarr;`)} />
             )}

@@ -3,12 +3,16 @@
 import { useEffect, useRef } from "react";
 import { applyPose, measureLabels } from "@/lib/drive/apply";
 import { installChecks, type DriveDebug } from "@/lib/drive/checks";
+import type { SlotId } from "@/lib/drive/formations";
 import { SCENES, WINDOW_YARDS, poseAt, showsLines } from "@/lib/drive/pose";
 import { progress, refLine } from "@/lib/drive/scroll";
 import { bindTips } from "@/lib/drive/tips-ui";
 
 // The phone layout (the window pinned on top of the lessons), as in drive.css
 const PHONE = "(max-width: 1000px)";
+// The lesson where the kicker first appears, and a mouse or a finger
+const KICKOFF = 1;
+const MOUSE = "(hover: hover) and (pointer: fine)";
 
 // An element's top in document coordinates. offsetTop, not getBoundingClientRect: the lesson cards are tilted, and
 // a tilted card's bounding box starts above its real top.
@@ -28,6 +32,11 @@ export default function DriveEngine({ children }: { children: React.ReactNode })
     const root = ref.current!;
     const win = root.querySelector<HTMLElement>(".window")!;
     const cards = Array.from(root.querySelectorAll<HTMLElement>(".lesson"));
+    // each lesson's beats (the bullets) and the players each one talks about
+    const beats = cards.map((c) => Array.from(c.querySelectorAll<HTMLElement>(".beats li")));
+    const focusOf = beats.map((list) => list.map((li) => (li.dataset.focus ?? "").split(" ").filter(Boolean) as SlotId[]));
+    let beat = -1;
+    root.querySelector<HTMLElement>(".hint")!.textContent = matchMedia(MOUSE).matches ? "Mouseover players to see more" : "Tap players to see more";
     const phone = matchMedia(PHONE);
     let tops: number[] = [], bottom = 0, scale = 1, height = 0, winH = 0;
     let frame = 0, onScreen = false, lesson = -1;
@@ -46,7 +55,17 @@ export default function DriveEngine({ children }: { children: React.ReactNode })
     const update = () => {
       const at = progress(scrollY + refLine(innerHeight, winH, !phone.matches), tops, bottom);
       const pose = poseAt(at.lesson, at.t);
-      applyPose(root, pose, scale, { height, lines: showsLines(SCENES[at.lesson]) });
+      // the beat being read: the lesson's stretch of scroll shared out between its beats
+      const n = beats[at.lesson].length;
+      const now = n ? Math.min(n - 1, Math.floor(at.t * n)) : -1;
+      const key = at.lesson * 100 + now;
+      if (key !== beat) {
+        if (beat >= 0) beats[Math.floor(beat / 100)]?.forEach((li) => li.classList.remove("on"));
+        beat = key;
+        if (now >= 0) beats[at.lesson][now].classList.add("on");
+      }
+      const focus = now >= 0 ? focusOf[at.lesson][now] : [];
+      applyPose(root, pose, scale, { height, lines: showsLines(SCENES[at.lesson]), focus, hint: at.lesson === KICKOFF });
       state = { ...at, tag: pose.tag, ball: [pose.ball.x, pose.ball.y], los: pose.los, firstDown: pose.firstDown };
       if (at.lesson !== lesson) {
         const first = lesson < 0;
