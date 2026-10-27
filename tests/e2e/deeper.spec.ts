@@ -68,26 +68,61 @@ for (const path of DEEPER) test.describe(path, () => {
   test(`chips ${path}`, async ({ page }) => {
     await page.goto(path);
     const hrefs = await page.locator("nav.chips a").evaluateAll(as => as.map(a => a.getAttribute("href")));
-    expect(hrefs.length).toBeGreaterThanOrEqual(3);
-    expect(hrefs.length).toBeLessThanOrEqual(4);
+    const waiting = ((await page.locator("nav.chips").getAttribute("data-waiting")) ?? "").split(" ").filter(Boolean);
+    const planned = hrefs.length + waiting.length;
+    expect(planned).toBeGreaterThanOrEqual(3);
+    expect(planned).toBeLessThanOrEqual(4);
     const known = PAGES.map(p => p.path);
     for (const h of hrefs) {
       expect(known).toContain(h);
       expect(h).not.toBe(path);
     }
+    for (const w of waiting) expect(known).not.toContain(w);
     await expect(page.locator("aside.back a")).toHaveAttribute("href", "/");
   });
 
   test(`focus is visible on chips and links ${path}`, async ({ page }) => {
     await page.goto(path);
-    const chip = page.locator("nav.chips a").first();
-    await chip.focus();
+    // the first live chip, or the way back while none of this page's chips is built yet
+    const link = (await page.locator("nav.chips a").count()) ? page.locator("nav.chips a").first() : page.locator("aside.back a");
+    await link.focus();
     await page.keyboard.press("Shift+Tab");
     await page.keyboard.press("Tab");
-    const style = await chip.evaluate(el => ({ focused: el.matches(":focus-visible"), s: getComputedStyle(el).outlineStyle, w: parseFloat(getComputedStyle(el).outlineWidth) }));
+    const style = await link.evaluate(el => ({ focused: el.matches(":focus-visible"), s: getComputedStyle(el).outlineStyle, w: parseFloat(getComputedStyle(el).outlineWidth) }));
     expect(style.focused).toBe(true);
     expect(style.s).not.toBe("none");
     expect(style.w).toBeGreaterThanOrEqual(2);
+  });
+
+  test(`diagrams ${path}`, async ({ page }) => {
+    await page.setViewportSize({ width: 360, height: 800 });
+    await page.goto(path);
+    const figures = await page.locator("figure.diagram").evaluateAll(fs => fs.map(f => ({
+      svg: !!f.querySelector("svg[role=img]"),
+      title: f.querySelector("svg[role=img] > title")?.textContent?.trim() ?? "",
+      caption: f.querySelector("figcaption")?.textContent?.trim() ?? "",
+      small: Array.from(f.querySelectorAll("svg text"))
+        .map(t => ({ text: t.textContent, h: t.getBoundingClientRect().height }))
+        .filter(t => t.h < 10),
+    })));
+    for (const [i, f] of figures.entries()) {
+      expect(f.svg, `figure ${i} has an svg[role=img]`).toBe(true);
+      expect(f.title, `figure ${i} title`).not.toBe("");
+      expect(f.caption, `figure ${i} caption`).not.toBe("");
+      expect(f.small, `figure ${i} (${f.title}): text under 10px at 360px`).toEqual([]);
+    }
+  });
+
+  test(`tables ${path}`, async ({ page }) => {
+    await page.goto(path);
+    const tables = await page.locator("table.data").evaluateAll(ts => ts.map(t => ({
+      wrapped: !!t.parentElement?.matches("div.table-wrap"),
+      caption: t.querySelector("caption")?.textContent?.trim() ?? "",
+    })));
+    for (const [i, t] of tables.entries()) {
+      expect(t.wrapped, `table ${i} is in a div.table-wrap`).toBe(true);
+      expect(t.caption, `table ${i} caption`).not.toBe("");
+    }
   });
 });
 

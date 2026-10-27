@@ -5,8 +5,7 @@ import { PAGES } from "../../lib/pages";
 export const DEEPER: string[] = PAGES.filter(p => p.kind !== "home").map(p => p.path);
 
 export const TARGET_WORDS: Record<string, number> = {
-  "/example-guide": 300,
-  "/another-example": 200,
+  "/downs-in-football": 1300,
   "/about": 300,
   "/privacy-policy": 1100,
 };

@@ -15,6 +15,16 @@ test("every internal link resolves", async ({ page, request }) => {
   }
 });
 
+test("every jump link lands on an element", async ({ page }) => {
+  for (const { path } of PAGES) {
+    await page.goto(path);
+    const missing = await page.locator('a[href^="#"]').evaluateAll(as => as
+      .map(a => a.getAttribute("href")!.slice(1))
+      .filter(id => !id || !document.getElementById(decodeURIComponent(id))));
+    expect(missing, path).toEqual([]);
+  }
+});
+
 test("a missing page gets the site's 404, with a way back and no ads", async ({ page }) => {
   const res = await page.goto("/no-such-page");
   expect(res?.status()).toBe(404);

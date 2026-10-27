@@ -28,7 +28,7 @@ export default function PrivacyPolicyPage() {
           control it, and the rights US state privacy laws may give you.
         </p>
       }
-      related={["/about", "/example-guide", "/another-example"]}
+      related={["/about", "/downs-in-football", "/football-penalties-explained"]}
     >
       <Section title="Overview">
         <Block>

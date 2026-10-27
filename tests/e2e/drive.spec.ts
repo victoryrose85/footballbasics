@@ -177,10 +177,12 @@ test("landscape phone stays readable", async ({ page }) => {
 });
 
 test("the engine rests while the drive is off screen", async ({ page }) => {
-  await open(page, 1300, 900);
+  // a short window, so the page below the drive is tall enough to scroll it right off, however few guides exist
+  await open(page, 1300, 600);
   await goTo(page, 3, 0.5);
   await expect.poll(() => drive(page, "running")).toBe(true);
   await page.evaluate(() => scrollTo(0, document.querySelector<HTMLElement>(".guides")!.getBoundingClientRect().top + scrollY));
+  expect(await page.locator("section.drive").evaluate(el => el.getBoundingClientRect().bottom), "the drive is off screen").toBeLessThanOrEqual(0);
   await expect.poll(() => drive(page, "running"), { timeout: 1000 }).toBe(false);
 });
 

@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
-import { BASE_URL, GUIDES, PAGES, getPage, pageHeadline, formatUpdated } from "@/lib/pages";
+import { BASE_URL, GUIDES, PAGES, getPage, isRegistered, pageHeadline, formatUpdated } from "@/lib/pages";
 import { SITE } from "@/site.config";
+import { BANNED, SITE_RULES } from "../copy-rules";
 import sitemap from "@/app/sitemap";
 import robots from "@/app/robots";
 
@@ -30,8 +31,18 @@ describe("page registry", () => {
       expect(p.description.length, p.path).toBeLessThanOrEqual(160);
     }
   });
+  test("titles and descriptions keep the copy rules", () => {
+    for (const p of PAGES) for (const [rule, re] of [...BANNED, ...SITE_RULES]) {
+      expect(p.title, `${p.path} title: ${rule}`).not.toMatch(re);
+      expect(p.description, `${p.path} description: ${rule}`).not.toMatch(re);
+    }
+  });
   test("throws on an unknown path", () => {
     expect(() => getPage("/nope")).toThrow();
+  });
+  test("isRegistered knows the registry and nothing else", () => {
+    expect(isRegistered("/about")).toBe(true);
+    expect(isRegistered("/nope")).toBe(false);
   });
   test("pageHeadline drops the brand suffix and leaves other titles alone", () => {
     const guide = GUIDES[0];

@@ -25,19 +25,11 @@ export const PAGES: PageInfo[] = [
     kind: "home",
   },
   {
-    path: "/example-guide",
-    name: "Writing a guide",
-    title: `How to Write a Guide Page on This Site${S}`,
-    description: "The sample guide: how a deeper page is put together, from the registry entry to the sections, blocks and related links.",
-    updated: "2026-10-24",
-    kind: "guide",
-  },
-  {
-    path: "/another-example",
-    name: "Diagrams and tables",
-    title: `Adding a Diagram or a Table to a Guide${S}`,
-    description: "The second sample guide: the figure and table styles the template ships with, and how to keep them readable on a phone.",
-    updated: "2026-10-24",
+    path: "/downs-in-football",
+    name: "Downs",
+    title: `Downs in Football Explained, With Examples${S}`,
+    description: "What a down is, why the offense gets four, how to read \"3rd & 7\", and what changes after a first down, a penalty, a punt or a failed fourth down.",
+    updated: "2026-10-27",
     kind: "guide",
   },
   {
@@ -45,7 +37,7 @@ export const PAGES: PageInfo[] = [
     name: "About",
     title: `About ${SITE.name}`,
     description: `Who writes ${SITE.name}, why it exists, and how to get in touch with a question or a correction.`,
-    updated: "2026-10-24",
+    updated: "2026-10-27",
     kind: "site",
   },
   {
@@ -53,13 +45,18 @@ export const PAGES: PageInfo[] = [
     name: "Privacy policy",
     title: `Privacy Policy${S}`,
     description: `How ${SITE.name} uses cookies for Google ads and Google Analytics, your privacy choices, and your rights under US state privacy laws.`,
-    updated: "2026-10-24",
+    updated: "2026-10-27",
     kind: "site",
   },
 ];
 
 // The explainers, in registry order: the homepage lists them and the 404 page links to the first few.
 export const GUIDES = PAGES.filter(p => p.kind === "guide");
+
+// Whether a path is a page on the site yet: links to a guide that isn't built render as plain text until it is.
+export function isRegistered(path: string): boolean {
+  return PAGES.some(p => p.path === path);
+}
 
 export function getPage(path: string): PageInfo {
   const page = PAGES.find(p => p.path === path);

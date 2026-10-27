@@ -58,6 +58,7 @@
 .sheet table.data th,.sheet table.data td{padding:7px 8px;text-align:left;white-space:nowrap}
 .sheet table.data thead th{background:var(--ink);color:#fff;font-weight:700}
 .sheet table.data tbody th{font-weight:700}
+.sheet table.data td.prose{white-space:normal;min-width:14em} /* a cell of sentences wraps instead of scrolling */
 .sheet table.data tbody tr:nth-child(even){background:var(--tint)}
 @media (max-width:560px){.sheet table.data{font-size:13px}.sheet table.data th,.sheet table.data td{padding:6px 5px}}
 
