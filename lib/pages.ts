@@ -89,6 +89,14 @@ export const PAGES: PageInfo[] = [
     kind: "guide",
   },
   {
+    path: "/how-to-watch-football",
+    name: "How to watch",
+    title: `How to Watch Football: What to Look For${S}`,
+    description: "A beginner's guide to watching an NFL game: the TV graphics, what to watch before, during and after each play, and when the game is really decided.",
+    updated: "2026-10-27",
+    kind: "guide",
+  },
+  {
     path: "/football-field-explained",
     name: "The field",
     title: `Football Field Explained: Every Line and Mark${S}`,
