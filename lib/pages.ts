@@ -113,6 +113,14 @@ export const PAGES: PageInfo[] = [
     kind: "guide",
   },
   {
+    path: "/how-the-nfl-season-works",
+    name: "The season",
+    title: `How the NFL Season Works, Start to Super Bowl${S}`,
+    description: "The NFL season in order: 17 games and a bye, how teams are grouped into conferences and divisions, who makes the playoffs, and how the Super Bowl is reached.",
+    updated: "2026-10-27",
+    kind: "guide",
+  },
+  {
     path: "/about",
     name: "About",
     title: `About ${SITE.name}`,

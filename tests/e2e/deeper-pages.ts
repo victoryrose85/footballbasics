@@ -16,6 +16,7 @@ export const TARGET_WORDS: Record<string, number> = {
   "/how-long-is-a-football-game": 1400,
   "/how-to-watch-football": 1600,
   "/football-field-explained": 1400,
+  "/how-the-nfl-season-works": 1500,
   "/about": 300,
   "/privacy-policy": 1100,
 };
