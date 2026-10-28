@@ -49,6 +49,14 @@ export const PAGES: PageInfo[] = [
     kind: "guide",
   },
   {
+    path: "/nfl-overtime-rules",
+    name: "Overtime",
+    title: `NFL Overtime Rules: Regular Season and Playoffs${S}`,
+    description: "How NFL overtime works: the coin toss, who gets the ball, when a game can end early, how long the period lasts, and when a regular-season game ties.",
+    updated: "2026-10-27",
+    kind: "guide",
+  },
+  {
     path: "/nfl-replay-review-and-challenges",
     name: "Replay review",
     title: `NFL Replay Review and Challenge Rules Explained${S}`,
