@@ -1,4 +1,4 @@
-import { lineupLayout, type LineupSpot } from "@/lib/diagrams/lineup";
+import { lineBox, lineupLayout, type LineupSpot } from "@/lib/diagrams/lineup";
 
 // A lineup diagram: the players as the homepage drive draws them (offense orange, defense light blue), each labelled
 // with its position, around the blue line of scrimmage. The kickoff instead shows shaded zones and labelled yard
@@ -14,12 +14,14 @@ interface LineupProps {
   zones?: Zone[];
   marks?: Mark[];
   scrimmage?: boolean; // draw the line of scrimmage (not on a kickoff)
+  boxLine?: boolean; // box the offense's players on the line of scrimmage
 }
 
 const R = 7.5;
 
-export default function Lineup({ spots, title, caption, layout, zones = [], marks = [], scrimmage = true }: LineupProps) {
+export default function Lineup({ spots, title, caption, layout, zones = [], marks = [], scrimmage = true, boxLine = false }: LineupProps) {
   const l = lineupLayout(spots, { ...layout, reach: [...(layout?.reach ?? []), ...zones.flatMap(z => [z.from, z.to]), ...marks.map(m => m.at)] });
+  const box = boxLine ? lineBox(spots, l) : null;
   const gutter = zones.length || marks.length ? 90 : 0;
   const text = { fontSize: 11, fontWeight: 700, fill: "var(--ink)", textAnchor: "end" } as const;
   return (
@@ -41,6 +43,7 @@ export default function Lineup({ spots, title, caption, layout, zones = [], mark
           </g>
         ))}
         {scrimmage && <line x1="0" y1={l.scrimmageY} x2={l.width} y2={l.scrimmageY} stroke="var(--los)" strokeWidth="3" />}
+        {box && <rect {...box} rx="10" fill="#fff" fillOpacity=".25" stroke="#fff" strokeWidth="2" strokeDasharray="5 4" />}
         {l.dots.map((d, i) => (
           <g key={i}>
             <circle cx={d.x} cy={d.y} r={R} fill={d.side === "o" ? "var(--offense)" : "var(--defense)"} stroke="var(--ink)" strokeWidth="1.5" />

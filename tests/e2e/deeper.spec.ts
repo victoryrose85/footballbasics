@@ -131,6 +131,14 @@ test("penalties has 12 signal figures", async ({ page }) => {
   await expect(page.locator("div.signals figure.diagram")).toHaveCount(12);
 });
 
+test("positions has the offense and defense lineups", async ({ page }) => {
+  await page.goto("/football-positions-explained");
+  const titles = await page.locator("figure.diagram svg > title").allTextContents();
+  expect(titles).toHaveLength(2);
+  expect(titles[0]).toContain("offense");
+  expect(titles[1]).toContain("defense");
+});
+
 test("contact anchor", async ({ page }) => {
   await page.goto("/about#contact");
   await expect(page.locator("#contact")).toBeInViewport();

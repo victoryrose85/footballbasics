@@ -77,3 +77,13 @@ export function lineupLayout(
     yOf,
   };
 }
+
+// A box around the offense's players on the line of scrimmage, to mark the seven the rules require (row 19). pad is
+// how far the box stands off the dots' centers, in drawing units.
+export function lineBox(spots: LineupSpot[], l: LineupLayout, pad = 11) {
+  const on = new Set(onTheLine(spots));
+  const dots = l.dots.filter((_, i) => on.has(spots[i]));
+  const xs = dots.map(d => d.x), ys = dots.map(d => d.y);
+  const [x, y] = [Math.min(...xs) - pad, Math.min(...ys) - pad];
+  return { x, y, width: Math.max(...xs) + pad - x, height: Math.max(...ys) + pad - y };
+}

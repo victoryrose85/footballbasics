@@ -49,6 +49,14 @@ export const PAGES: PageInfo[] = [
     kind: "guide",
   },
   {
+    path: "/football-positions-explained",
+    name: "Positions",
+    title: `Football Positions Explained: Every NFL Role${S}`,
+    description: "Every position on an NFL team, from quarterback to long snapper: what each player does, where they line up and what number they wear.",
+    updated: "2026-10-27",
+    kind: "guide",
+  },
+  {
     path: "/special-teams-explained",
     name: "Special teams",
     title: `Special Teams Explained: Kickoffs, Punts, Kicks${S}`,

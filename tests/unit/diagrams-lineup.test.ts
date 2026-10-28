@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 import { FORMATIONS } from "@/lib/drive/formations";
-import { PUNT, defenseOf, lineupLayout, offenseOf, onTheLine } from "@/lib/diagrams/lineup";
+import { PUNT, defenseOf, lineBox, lineupLayout, offenseOf, onTheLine } from "@/lib/diagrams/lineup";
 
 test("every offense the guides draw has seven on the line (row 19)", () => {
   for (const id of ["shotgun", "singleback", "i-form", "heavy", "goal-line"] as const)
@@ -39,4 +39,12 @@ test("the layout can reach past the players, for the kickoff's zones", () => {
   expect(reach.height).toBeGreaterThan(plain.height);
   expect(reach.yOf(75)).toBeLessThan(reach.height);
   expect(reach.yOf(0)).toBeCloseTo(reach.scrimmageY);
+});
+
+test("the line box holds the seven on the line of the I formation and no one else", () => {
+  const spots = offenseOf(FORMATIONS["i-form"]);
+  const l = lineupLayout(spots);
+  const b = lineBox(spots, l);
+  const inside = l.dots.filter(d => d.x > b.x && d.x < b.x + b.width && d.y > b.y && d.y < b.y + b.height);
+  expect(inside.map(d => d.label).sort()).toEqual(["C", "G", "G", "T", "T", "TE", "WR"]);
 });
