@@ -139,6 +139,11 @@ test("positions has the offense and defense lineups", async ({ page }) => {
   expect(titles[1]).toContain("defense");
 });
 
+test("formations has 11 lineups", async ({ page }) => {
+  await page.goto("/football-formations-explained");
+  await expect(page.locator("figure.diagram")).toHaveCount(11);
+});
+
 test("contact anchor", async ({ page }) => {
   await page.goto("/about#contact");
   await expect(page.locator("#contact")).toBeInViewport();

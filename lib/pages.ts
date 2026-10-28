@@ -57,6 +57,14 @@ export const PAGES: PageInfo[] = [
     kind: "guide",
   },
   {
+    path: "/football-formations-explained",
+    name: "Formations",
+    title: `Football Formations Explained, With Diagrams${S}`,
+    description: "Offensive and defensive formations in NFL football, drawn out: shotgun, I formation, goal-line sets, the 4-3 and 3-4 defenses, and nickel.",
+    updated: "2026-10-27",
+    kind: "guide",
+  },
+  {
     path: "/special-teams-explained",
     name: "Special teams",
     title: `Special Teams Explained: Kickoffs, Punts, Kicks${S}`,
