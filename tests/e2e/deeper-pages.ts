@@ -12,6 +12,7 @@ export const TARGET_WORDS: Record<string, number> = {
   "/football-positions-explained": 2300,
   "/football-formations-explained": 1800,
   "/special-teams-explained": 1700,
+  "/how-long-is-a-football-game": 1400,
   "/football-field-explained": 1400,
   "/about": 300,
   "/privacy-policy": 1100,

@@ -81,6 +81,14 @@ export const PAGES: PageInfo[] = [
     kind: "guide",
   },
   {
+    path: "/how-long-is-a-football-game",
+    name: "Game length",
+    title: `How Long Is a Football Game? About 3 Hours${S}`,
+    description: "An NFL game is 60 minutes on the clock and about three hours on the couch. See what stops the clock, how timeouts and halftime work, and why.",
+    updated: "2026-10-27",
+    kind: "guide",
+  },
+  {
     path: "/football-field-explained",
     name: "The field",
     title: `Football Field Explained: Every Line and Mark${S}`,
