@@ -48,6 +48,7 @@
 /* diagrams: an inline SVG with a <title>, and a caption under it */
 .sheet figure.diagram{margin:14px 0 0}
 .sheet figure.diagram svg{width:100%;max-width:440px;height:auto;display:block;margin:0 auto}
+.sheet figure.diagram.wide svg{max-width:520px}
 .sheet figure.diagram figcaption{font:700 14px/1.4 var(--font-body);text-align:center;margin-top:8px;color:var(--ink)}
 .sheet figure.diagram .call{display:inline-block;background:var(--accent);border:2px solid var(--ink);border-radius:14px;padding:3px 12px;box-shadow:2px 2px 0 var(--ink)}
 /* the penalties guide's sheet of the officials' signals: two to a row on a phone */

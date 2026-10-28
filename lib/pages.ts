@@ -57,6 +57,14 @@ export const PAGES: PageInfo[] = [
     kind: "guide",
   },
   {
+    path: "/football-field-explained",
+    name: "The field",
+    title: `Football Field Explained: Every Line and Mark${S}`,
+    description: "A guided tour of an NFL football field: the yard lines and numbers, hash marks, end zones, goalposts and the sidelines, with measurements.",
+    updated: "2026-10-27",
+    kind: "guide",
+  },
+  {
     path: "/about",
     name: "About",
     title: `About ${SITE.name}`,
