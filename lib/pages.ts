@@ -49,6 +49,14 @@ export const PAGES: PageInfo[] = [
     kind: "guide",
   },
   {
+    path: "/nfl-replay-review-and-challenges",
+    name: "Replay review",
+    title: `NFL Replay Review and Challenge Rules Explained${S}`,
+    description: "How NFL replay works: which plays are reviewed automatically, what a coach can challenge, what it costs, and the plays no one can review.",
+    updated: "2026-10-27",
+    kind: "guide",
+  },
+  {
     path: "/football-positions-explained",
     name: "Positions",
     title: `Football Positions Explained: Every NFL Role${S}`,

@@ -241,14 +241,14 @@ export default function PositionsPage() {
             pass, and an 80-something is a receiver or a tight end.
           </p>
           <div className="table-wrap">
-            <table className="data">
+            <table className="data even">
               <caption>Jersey numbers by position in the NFL</caption>
               <thead>
                 <tr><th scope="col">Position</th><th scope="col">Numbers</th></tr>
               </thead>
               <tbody>
                 {NUMBERS.map(([pos, nums]) => (
-                  <tr key={pos}><th scope="row" className="prose">{pos}</th><td>{nums}</td></tr>
+                  <tr key={pos}><th scope="row" className="prose">{pos}</th><td className="prose">{nums}</td></tr>
                 ))}
               </tbody>
             </table>

@@ -30,7 +30,7 @@ Retired URLs 301 in `public/_redirects` (each with and without a trailing slash)
   - `jsonLd` (optional): extra structured data, such as a DefinedTermSet for a glossary
 - Inside it, each H2 is a `<Section title>` and each white block a `<Block kicker title>`.
 - `components/PageFrame.tsx` is the frame every page shares: the rails, the sheet, the wordmark and the footer.
-- Diagrams are inline SVG in a `figure.diagram` with a `<title>`; tables are `table.data` inside `div.table-wrap` (a cell of sentences gets `td.prose`, so it wraps). Keep any logic behind them pure and unit-tested in `lib/`.
+- Diagrams are inline SVG in a `figure.diagram` with a `<title>`; tables are `table.data` inside `div.table-wrap` (a cell of sentences, `td` or `th`, gets `.prose`, so it wraps; `table.data.even` splits two such columns evenly). Keep any logic behind them pure and unit-tested in `lib/`.
 - Diagram logic lives in `lib/diagrams/`.
 - `tests/e2e/deeper-pages.ts` lists each page's length target (`TARGET_WORDS`). `deeper.spec.ts` checks SEO, ads, rails, chips, focus and 360px width on each; `copy-rules.spec.ts` checks the copy rules and the length. A new page needs its `TARGET_WORDS` entry.
 
