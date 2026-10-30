@@ -129,8 +129,8 @@ export default function ScoringPage() {
           <p>
             After a touchdown the scoring team gets one more snap, called the <strong>try</strong> or the
             conversion. Most teams kick it. The ball is snapped from 15 yards out, a holder sets it on the ground and
-            the kicker sends it through the goalposts for 1 point. Counting the 10 yards of the end zone, which the
-            goalposts stand behind, that&rsquo;s a 33-yard kick.
+            the kicker sends it through the goalposts for 1 point. Add the 10 yards of the end zone, which the goalposts
+            stand behind, and the holder&rsquo;s spot behind the line, and that&rsquo;s a 33-yard kick.
           </p>
         </Block>
         <Block kicker="2 points" title="The two-point try">
@@ -205,6 +205,15 @@ export default function ScoringPage() {
             After a touchdown or a field goal, the team that scored kicks off to the other team. A safety is different:
             the team that gave up the 2 points also has to kick the ball away, from its own 20. So the defense gets the
             points and the ball as well, which makes a safety one of the most damaging plays in the game.
+          </p>
+        </Block>
+      </Section>
+
+      <Section title="Unusual totals">
+        <Block kicker="4 points" title="Can a team score exactly 4 points?">
+          <p>
+            Yes, though you&rsquo;ll rarely see it. No single play is worth 4, so a team has to get there with two scores
+            of 2 points each, and the simplest way is two safeties.
           </p>
         </Block>
       </Section>

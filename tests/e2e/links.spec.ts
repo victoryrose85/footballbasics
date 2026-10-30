@@ -42,6 +42,14 @@ test("a missing page gets the site's 404, with a way back and no ads", async ({ 
   await expect(page.locator("main.sheet a[href='/']").first()).toBeVisible();
   await expect(page.locator(".foot")).toBeVisible();
   expect(await page.locator("ins.adsbygoogle").count()).toBe(0);
+  // Auto ads places ads by itself wherever this script loads, so the 404 page must not have it
+  await expect(page.locator('script[src*="adsbygoogle"]')).toHaveCount(0);
+});
+
+for (const path of ["/", "/downs-in-football", "/about"]) test(`the AdSense script loads once on ${path}, in the head`, async ({ page }) => {
+  await page.goto(path);
+  await expect(page.locator('head script[src*="adsbygoogle"]')).toHaveCount(1);
+  await expect(page.locator('script[src*="adsbygoogle"]')).toHaveCount(1);
 });
 
 test("ads.txt names the AdSense account", async ({ request }) => {

@@ -15,7 +15,7 @@ export default function Signal({ signal }: { signal: SignalPose }) {
   const moving = signal.left.upper === 0 && signal.left.fore === 0 ? [hands[1]] : hands; // a hanging arm doesn't move
   return (
     <figure className="diagram">
-      <svg viewBox="-52 -48 104 124" role="img">
+      <svg viewBox="-64 -52 128 128" role="img">
         <title>{`The officials' signal for ${signal.caption.toLowerCase()}: ${signal.source.split(": ").at(-1)}`}</title>
         <g fill="none" stroke={INK} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="0" cy="-14" r="9" fill="#fff" />

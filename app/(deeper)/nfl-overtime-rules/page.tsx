@@ -163,9 +163,8 @@ export default function OvertimePage() {
       <Section title="Replay in overtime">
         <Block kicker="No red flags" title="No coaches&rsquo; challenges">
           <p>
-            Coaches can&rsquo;t challenge anything in overtime. Every review is started by the Replay Official, the
-            member of the officiating staff who watches the game on video, as it is after the two-minute warning near
-            the end of each half. The{" "}
+            Coaches can&rsquo;t challenge anything in overtime. Replay review still happens, but it starts only with the
+            officials, as it does after the two-minute warning near the end of each half. The{" "}
             <GuideLink href="/nfl-replay-review-and-challenges">guide to replay review</GuideLink> explains what can
             be reviewed.
           </p>

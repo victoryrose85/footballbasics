@@ -102,14 +102,15 @@ for (const path of DEEPER) test.describe(path, () => {
       title: f.querySelector("svg[role=img] > title")?.textContent?.trim() ?? "",
       caption: f.querySelector("figcaption")?.textContent?.trim() ?? "",
       small: Array.from(f.querySelectorAll("svg text"))
-        .map(t => ({ text: t.textContent, h: t.getBoundingClientRect().height }))
-        .filter(t => t.h < 10),
+        // the font size as drawn, not the text's box, which is about 1.4 times taller than the letters
+        .map(t => ({ text: t.textContent, px: parseFloat(getComputedStyle(t).fontSize) * (() => { const m = (t as SVGGraphicsElement).getScreenCTM(); return m ? Math.hypot(m.a, m.b) : 1; })() }))
+        .filter(t => t.px < 9),
     })));
     for (const [i, f] of figures.entries()) {
       expect(f.svg, `figure ${i} has an svg[role=img]`).toBe(true);
       expect(f.title, `figure ${i} title`).not.toBe("");
       expect(f.caption, `figure ${i} caption`).not.toBe("");
-      expect(f.small, `figure ${i} (${f.title}): text under 10px at 360px`).toEqual([]);
+      expect(f.small, `figure ${i} (${f.title}): text under 9px at 360px`).toEqual([]);
     }
   });
 
@@ -129,6 +130,27 @@ for (const path of DEEPER) test.describe(path, () => {
 test("penalties has 12 signal figures", async ({ page }) => {
   await page.goto("/football-penalties-explained");
   await expect(page.locator("div.signals figure.diagram")).toHaveCount(12);
+});
+
+test("no signal figure is cut off by its frame", async ({ page }) => {
+  await page.goto("/football-penalties-explained");
+  const cut = await page.locator("figure.diagram svg").evaluateAll(svgs => svgs.flatMap(s => {
+    const svg = s as SVGSVGElement;
+    const box = svg.getBBox(), view = svg.viewBox.baseVal;
+    const fits = box.x >= view.x && box.y >= view.y && box.x + box.width <= view.x + view.width && box.y + box.height <= view.y + view.height;
+    return fits ? [] : [svg.querySelector("title")?.textContent];
+  }));
+  expect(cut).toEqual([]);
+});
+
+test("the kicker stands on the 35 the kickoff diagram labels", async ({ page }) => {
+  await page.goto("/special-teams-explained");
+  const gap = await page.locator("figure.diagram").first().evaluate(f => {
+    const kicker = Array.from(f.querySelectorAll("text")).find(t => t.textContent === "K")!.previousElementSibling as SVGCircleElement;
+    const mark = Array.from(f.querySelectorAll("text")).find(t => t.textContent === "Kickers’ 35")!.previousElementSibling as SVGLineElement;
+    return Math.abs(kicker.cy.baseVal.value - mark.y1.baseVal.value);
+  });
+  expect(gap).toBeLessThan(1);
 });
 
 test("positions has the offense and defense lineups", async ({ page }) => {

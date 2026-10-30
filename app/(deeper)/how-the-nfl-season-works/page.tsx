@@ -178,6 +178,10 @@ export default function SeasonPage() {
             </table>
           </div>
           <p>
+            So teams from the two conferences do meet in the regular season: five of every team&rsquo;s 17 games are
+            against the other conference.
+          </p>
+          <p>
             The divisions a team plays rotate from one season to the next, so the exact opponents change every year.
             The last three games in the table are matched by where teams finished in their divisions the year before,
             so a division winner tends to meet other division winners. Over four seasons, the rotation brings every
@@ -220,8 +224,7 @@ export default function SeasonPage() {
           <p>
             When two teams in a division finish with the same record, the first tiebreaker is their games against
             each other: the team that won more of them finishes ahead. If they split those games, the next step is
-            their record within the division. The league&rsquo;s full list runs longer, with games against common
-            opponents next, and a separate list decides ties for the wild-card places.
+            their record within the division. The league&rsquo;s full list runs longer, and a separate list decides ties for the wild-card places.
           </p>
         </Block>
       </Section>
@@ -301,8 +304,8 @@ export default function SeasonPage() {
             </table>
           </div>
           <p>
-            Each game in all of this is the same game: four 15-minute quarters that take about three hours, with the same rules
-            from the first preseason snap to the Super Bowl. The draft, where teams choose new players, happens in the
+            Each game in the regular season and the playoffs is the same game: four 15-minute quarters that take about three
+            hours. The draft, where teams choose new players, happens in the
             offseason and is a story of its own.
           </p>
         </Block>

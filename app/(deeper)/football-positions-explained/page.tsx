@@ -59,6 +59,11 @@ export default function PositionsPage() {
             single yard. The count never changes, though: 11 a side on every play. Everyone else waits on the
             sideline.
           </p>
+          <p>
+            A common offense is five linemen, a quarterback, a running back, a tight end and three wide receivers. A
+            common defense is four linemen, three linebackers, two cornerbacks and two safeties. Each of those jobs is
+            explained below.
+          </p>
         </Block>
       </Section>
 

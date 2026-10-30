@@ -22,7 +22,7 @@ export default function PenaltiesPage() {
       }
       back={{
         title: "Back to the drive",
-        text: "The homepage drive draws four of these flags as they happen: a false start that pushes 3rd & 6 back to 3rd & 11, pass interference that gains 18 yards and a first down, holding that wipes out a 12-yard run, and roughing the passer that turns a lost play into a fresh set of downs.",
+        text: "The homepage drive draws several of these flags as they happen, among them a false start that pushes 3rd & 6 back to 3rd & 11, pass interference that gains 18 yards and a first down, holding that wipes out a 12-yard run, and roughing the passer that turns a lost play into a fresh set of downs.",
       }}
       related={["/downs-in-football", "/nfl-replay-review-and-challenges", "/how-to-watch-football", "/football-glossary"]}
     >
@@ -61,8 +61,8 @@ export default function PenaltiesPage() {
       <Section title="How a penalty is measured">
         <Block kicker="The spot" title="From where the yards come">
           <p>
-            Most penalties are measured from the <strong>previous spot</strong>, the place where the play started. A
-            few are measured from the <strong>spot of the foul</strong>, where it happened. The biggest of these is
+            Many penalties are measured from the <strong>previous spot</strong>, the place where the play started.
+            Others are measured from the <strong>spot of the foul</strong>, where it happened. The biggest of these is
             pass interference by the defense: the offense gets the ball wherever the foul took place, however far
             downfield that is.
           </p>
@@ -175,8 +175,8 @@ export default function PenaltiesPage() {
       <Section title="Fouls during the play: blocking and holding">
         <Block kicker="10 or 15 yards" title="The blocking fouls">
           <p>
-            Blocking is how the offense clears a path, and the rules limit how it&rsquo;s done. All of these are called
-            on the offense:
+            Blocking is how the offense clears a path, and the rules limit how it&rsquo;s done. These are the fouls
+            you&rsquo;ll hear called:
           </p>
           <ul>
             <li><strong>Offensive holding</strong>, 10 yards: grabbing, hooking, twisting or pulling down a defender to keep him from getting where he&rsquo;s going.</li>

@@ -29,7 +29,7 @@ export const PAGES: PageInfo[] = [
     name: "Penalties",
     title: `Football Penalties Explained: Flags and Signals${S}`,
     description: "Every common NFL penalty in plain English: what the flag means, how many yards it costs, whether the down repeats, and the official's hand signal.",
-    updated: "2026-10-27",
+    updated: "2026-10-30",
     kind: "guide",
   },
   {
@@ -45,7 +45,7 @@ export const PAGES: PageInfo[] = [
     name: "Scoring",
     title: `Football Scoring Explained: Every Way to Score${S}`,
     description: "Touchdown, field goal, safety, extra point and two-point try: how many points each is worth, how it happens, and the rare ways the defense scores.",
-    updated: "2026-10-27",
+    updated: "2026-10-30",
     kind: "guide",
   },
   {
@@ -53,7 +53,7 @@ export const PAGES: PageInfo[] = [
     name: "Overtime",
     title: `NFL Overtime Rules: Regular Season and Playoffs${S}`,
     description: "How NFL overtime works: the coin toss, who gets the ball, when a game can end early, how long the period lasts, and when a regular-season game ties.",
-    updated: "2026-10-27",
+    updated: "2026-10-30",
     kind: "guide",
   },
   {
@@ -69,7 +69,7 @@ export const PAGES: PageInfo[] = [
     name: "Positions",
     title: `Football Positions Explained: Every NFL Role${S}`,
     description: "Every position on an NFL team, from quarterback to long snapper: what each player does, where they line up and what number they wear.",
-    updated: "2026-10-27",
+    updated: "2026-10-30",
     kind: "guide",
   },
   {
@@ -85,7 +85,7 @@ export const PAGES: PageInfo[] = [
     name: "Special teams",
     title: `Special Teams Explained: Kickoffs, Punts, Kicks${S}`,
     description: "What special teams are in football: how a kickoff works, when a team punts, how a field goal is kicked, and what a fair catch and touchback mean.",
-    updated: "2026-10-27",
+    updated: "2026-10-30",
     kind: "guide",
   },
   {
@@ -117,7 +117,7 @@ export const PAGES: PageInfo[] = [
     name: "The season",
     title: `How the NFL Season Works, Start to Super Bowl${S}`,
     description: "The NFL season in order: 17 games and a bye, how teams are grouped into conferences and divisions, who makes the playoffs, and how the Super Bowl is reached.",
-    updated: "2026-10-27",
+    updated: "2026-10-30",
     kind: "guide",
   },
   {

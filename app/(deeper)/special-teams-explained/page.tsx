@@ -16,6 +16,11 @@ const KICKOFF_ZONES = [
   { from: 45, to: 65, label: "Landing zone" },
   { from: 65, to: 75, label: "End zone", dark: true },
 ];
+// The drive starts the kicker on his run-up, 6 yards back; here he stands on the line the copy puts him on
+const KICKOFF_SPOTS = [
+  ...offenseOf(FORMATIONS.kickoff),
+  ...defenseOf(FORMATIONS.kickoff).map(s => (s.pos === "k" ? { ...s, at: [s.at[0], 0] as [number, number] } : s)),
+];
 const KICKOFF_MARKS = [
   { at: 0, label: "Kickers’ 35" },
   { at: 25, label: "Receivers’ 40" },
@@ -67,7 +72,7 @@ export default function SpecialTeamsPage() {
             two walls of players stand still while the kick is in the air.
           </p>
           <Lineup
-            spots={[...offenseOf(FORMATIONS.kickoff), ...defenseOf(FORMATIONS.kickoff)]}
+            spots={KICKOFF_SPOTS}
             title="The 2026 kickoff: the kicker at his 35, his ten teammates on the receivers' 40, nine receiving players in the setup zone, and two returners deep"
             caption="The kickoff: kicking team in blue, receiving team in orange"
             layout={{ squeeze: false, pxPerYard: 5 }}
@@ -210,7 +215,7 @@ export default function SpecialTeamsPage() {
           <p>
             After a touchdown, the scoring team gets one snap, the <strong>try</strong>, and most teams kick it. The
             field goal unit comes out, the ball is snapped from the 15-yard line and the kick through the goalposts is
-            worth 1 point. With the 10 yards of the end zone added, it&rsquo;s a 33-yard kick. The other choice, a run
+            worth 1 point. With the 10 yards of the end zone and the holder&rsquo;s spot behind the line added, it&rsquo;s a 33-yard kick. The other choice, a run
             or pass from the 2 for 2 points, and every other way to score are in the{" "}
             <GuideLink href="/how-scoring-works-in-football">guide to scoring</GuideLink>.
           </p>

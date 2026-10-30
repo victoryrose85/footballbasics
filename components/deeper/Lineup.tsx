@@ -17,12 +17,12 @@ interface LineupProps {
   boxLine?: boolean; // box the offense's players on the line of scrimmage
 }
 
-const R = 7.5;
-
 export default function Lineup({ spots, title, caption, layout, zones = [], marks = [], scrimmage = true, boxLine = false }: LineupProps) {
   const l = lineupLayout(spots, { ...layout, reach: [...(layout?.reach ?? []), ...zones.flatMap(z => [z.from, z.to]), ...marks.map(m => m.at)] });
   const box = boxLine ? lineBox(spots, l) : null;
   const gutter = zones.length || marks.length ? 90 : 0;
+  // The kickoff's gutter makes its drawing wider, so a phone shrinks it more: its dots and labels start larger
+  const [r, labelSize] = gutter ? [9.5, 11] : [8, 10];
   const text = { fontSize: 11, fontWeight: 700, fill: "var(--ink)", textAnchor: "end" } as const;
   return (
     <figure className="diagram">
@@ -46,9 +46,9 @@ export default function Lineup({ spots, title, caption, layout, zones = [], mark
         {box && <rect {...box} rx="10" fill="#fff" fillOpacity=".25" stroke="#fff" strokeWidth="2" strokeDasharray="5 4" />}
         {l.dots.map((d, i) => (
           <g key={i}>
-            <circle cx={d.x} cy={d.y} r={R} fill={d.side === "o" ? "var(--offense)" : "var(--defense)"} stroke="var(--ink)" strokeWidth="1.5" />
+            <circle cx={d.x} cy={d.y} r={r} fill={d.side === "o" ? "var(--offense)" : "var(--defense)"} stroke="var(--ink)" strokeWidth="1.2" />
             {d.label && (
-              <text x={d.x} y={d.y + 3.2} textAnchor="middle" fontSize={d.label.length > 1 ? 8.5 : 9.5} fontWeight="700" fill="var(--ink)">
+              <text x={d.x} y={d.y + labelSize * 0.35} textAnchor="middle" fontSize={labelSize} fontWeight="700" fill="var(--ink)">
                 {d.label}
               </text>
             )}

@@ -37,12 +37,6 @@ export default function RootLayout({
         {/* Consent Mode defaults first, so Analytics waits for the consent message's answer where one is shown */}
         <script dangerouslySetInnerHTML={{ __html: GTAG_INIT }} />
         <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
-        {/* Plain script tag: AdSense rejects the data-nscript attribute next/script adds */}
-        <script
-          async
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${AD_CLIENT}`}
-          crossOrigin="anonymous"
-        />
       </head>
       <body>{children}</body>
     </html>

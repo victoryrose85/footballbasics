@@ -11,7 +11,7 @@ Each guide has the same seven items: URL, title and description, main query and 
 | Evidence | What was done | Status |
 |---|---|---|
 | Autocomplete | Google's suggest endpoint (`suggestqueries.google.com`, `hl=en`, `gl=us`) was queried on 2026-10-25 for each main query and for about 45 question stems. Every query tagged **AC** below was returned by it, in Google's order. No volumes. | **Observed** |
-| People also ask | Google's results page could not be fetched (the scraper errored), and Bing's results text showed no question box. **No guide's "People also ask" was observed.** Questions tagged **PAA?** are my judgment of what the box would show, chosen because the same question (or its stem) came back from autocomplete. Check them by hand in a browser before launch if they matter. | **Not observed** |
+| People also ask | Google's results page was read in the integrated browser on 2026-10-30 for each main query (signed-out, `hl=en`, `gl=us`), with the first four questions recorded under each guide. The box varies by session. Questions that fit a guide and have a rules-check row were answered; ones with no row, like the rarest penalty or why the 20-yard line differs, were left out. | **Observed** |
 | Top results | A web search per main query, plus Bing's result list for the same query on 2026-10-25, gave titles, snippets and (for five pages) headings. It did **not** give word counts, and several results were content-farm pages. Lengths below are therefore a judgment from what the titles and headings show the top results cover, not a measurement. | **Partly observed** |
 
 What the result lists showed, in one paragraph: for the rule-based queries (penalties, downs, scoring, overtime, positions, length) the top pages are one-screen "complete guide" articles that list the items with a sentence each. A table of the five most common penalties, four-sentence downs primers, a bullet list of positions. None has diagrams of the officials' signals, a worked example of enforcement, or a clear current-rules date. That is the information gain every guide below aims at: a diagram or table that shows the thing, a worked example, and rules checked to the 2026 book. Two queries ("football formations explained", "how to watch football") are crowded with results about other sports or with live-stream links; their guides put "American football" or "NFL" in the first sentence so the page is clearly about the right game.
@@ -50,7 +50,7 @@ Titles end in ` | FootballBasics` (17 characters), so the headline part is 48 ch
 - **Title:** `Football Penalties Explained: Flags and Signals | FootballBasics`
 - **Description:** `Every common NFL penalty in plain English: what the flag means, how many yards it costs, whether the down repeats, and the official's hand signal.`
 - **Main query:** football penalties explained (AC: "football penalties explained", "nfl penalties explained", "nfl penalties explained for dummies", "football penalties signals", "football penalties meaning").
-- **Related questions:** football penalties list (AC); football penalties and yardage (AC); football penalties referee signals / hand signals (AC); football penalties half the distance (AC); what is a flag on the play (AC); can a team decline a penalty (PAA?); what is the difference between a 5, 10 and 15 yard penalty (PAA?).
+- **Related questions:** football penalties list (AC); football penalties and yardage (AC); football penalties referee signals / hand signals (AC); football penalties half the distance (AC); what is a flag on the play (AC). **People also ask (seen 2026-10-30):** Which action by a quarterback is illegal? What is the rarest penalty in football? Which number can a quarterback not wear? What are the most common penalties in the NFL?
 - **Length target:** 2,300 words. The top results are lists of the 5 to 10 most common penalties with a sentence each, so a guide that gives about 30 penalties with a signal diagram, a yardage table and the enforcement rules is the longest on the topic by design, and the length is the table.
 
 ### Outline
@@ -86,7 +86,7 @@ Rows 5, 6, 7, 8, 9, 10, 11, 12, 14, 19, 33 to 47, 77 to 80 (all in the rules che
 - **Title:** `Downs in Football Explained, With Examples | FootballBasics`
 - **Description:** `What a down is, why the offense gets four, how to read "3rd & 7", and what changes after a first down, a penalty, a punt or a failed fourth down.`
 - **Main query:** downs in football explained (AC: "downs in football", "downs in football explained", "downs in football explained for dummies", "downs in football meaning", "4 downs in football").
-- **Related questions:** what does 3rd and 7 mean in football (AC; the homepage owns the 1st and 10 and 3rd and 10 forms, this page owns the other numbers and the full table); what is a first down in football (AC); what is 4th down in football (AC); what is 4th and goal (AC); what does 2nd and long mean (AC); what happens if the offense does not get a first down (PAA?).
+- **Related questions:** what does 3rd and 7 mean in football (AC; the homepage owns the 1st and 10 and 3rd and 10 forms, this page owns the other numbers and the full table); what is a first down in football (AC); what is 4th down in football (AC); what is 4th and goal (AC); what does 2nd and long mean (AC). **People also ask (seen 2026-10-30):** What does 1st down and 10 mean? What happens after 4 downs? How many downs to make 10 yards? What does 2nd down and 6 mean?
 - **Length target:** 1,300 words. The top results are 600 to 1,000 word primers with no table of situations, so the plan is the primer plus a worked table and the penalty and fourth-down sections.
 
 ### Outline
@@ -121,7 +121,7 @@ Rows 12, 21, 30, 31, 33, 40, 46, 47, 50, 54, 69, N7.
 - **Title:** `Football Scoring Explained: Every Way to Score | FootballBasics`
 - **Description:** `Touchdown, field goal, safety, extra point and two-point try: how many points each is worth, how it happens, and the rare ways the defense scores.`
 - **Main query:** football scoring explained (AC: "football scoring", "football scoring explained", "football scoring points", "football scoring rules"; the exact phrase "how scoring works in football" completes mostly to fantasy and other sports, so the page does not rely on it).
-- **Related questions:** how many points is a touchdown (AC); how many points is a field goal (AC); how many points is a safety (AC); what is a 2 point conversion (AC); can the other team score on a two point conversion (AC); what is the most points a team can score on one play (PAA?).
+- **Related questions:** how many points is a touchdown (AC); how many points is a field goal (AC); how many points is a safety (AC); what is a 2 point conversion (AC); can the other team score on a two point conversion (AC). **People also ask (seen 2026-10-30):** Which number can a quarterback not wear? How do you get 3 points in football? Can you explain American football in a simple way? Can you score just 4 points in football? (block added)
 - **Length target:** 1,400 words. The top results are short lists of the five scores with a sentence each; this page adds how each score happens, the try in full, the defensive scores and a drive-by-drive example.
 
 ### Outline
@@ -156,7 +156,7 @@ Rows 3, 4, 22, 26, 32, 48, 49, 50, 51, 70, 71, 72.
 - **Title:** `NFL Overtime Rules: Regular Season and Playoffs | FootballBasics`
 - **Description:** `How NFL overtime works: the coin toss, who gets the ball, when a game can end early, how long the period lasts, and when a regular-season game ties.`
 - **Main query:** nfl overtime rules (AC: "nfl overtime rules", "nfl overtime rules 2026", "nfl overtime rules regular season", "nfl overtime rules playoffs", "nfl overtime rules change").
-- **Related questions:** do both teams get the ball in overtime (AC); can overtime end in a tie (AC); how many timeouts in nfl overtime (AC); what ends overtime in nfl (AC); how does overtime work in the nfl playoffs (AC); can you win in overtime with a field goal (a result heading, so a likely PAA).
+- **Related questions:** do both teams get the ball in overtime (AC); can overtime end in a tie (AC); how many timeouts in nfl overtime (AC); what ends overtime in nfl (AC); how does overtime work in the nfl playoffs (AC). **People also ask (seen 2026-10-30):** Which number can a quarterback not wear? What is the new rule on overtime in the NFL? Do both teams get a chance in OT in the NFL? What NFL team did Donald Trump try to buy?
 - **Length target:** 1,200 words. The top results are 600 to 1,200 words and are the rule that changes most, so they go stale. The page says "2026" in the first sentence, dates the rule changes (N6) and gives two worked games.
 
 ### Outline
@@ -192,7 +192,7 @@ Rows 18, 23, 24, 56, 61; N6 (**verify** in a browser; page renders with JavaScri
 - **Title:** `NFL Replay Review and Challenge Rules Explained | FootballBasics`
 - **Description:** `How NFL replay works: which plays are reviewed automatically, what a coach can challenge, what it costs, and the plays no one can review.`
 - **Main query:** nfl challenge rules (AC: "nfl challenge rules", "nfl challenge rules 2026", "nfl challenge rules under 2 minutes", "nfl challenge rules overtime", "nfl challenge rules pass interference"). Secondary: "nfl replay review rules" (AC).
-- **Related questions:** how many challenges does a coach get in the nfl (AC); what can coaches challenge in nfl (AC); can you challenge a penalty (AC, "nfl challenge rules pass interference" suggests it); what is a challenge flag (PAA?); what happens when a challenge fails (PAA?).
+- **Related questions:** how many challenges does a coach get in the nfl (AC); what can coaches challenge in nfl (AC); can you challenge a penalty (AC, "nfl challenge rules pass interference" suggests it). **People also ask (seen 2026-10-30):** What is the new challenge rule in the NFL? How many challenges are allowed in the NFL? What plays cannot be challenged in the NFL? Can you challenge under 2 minutes in the NFL?
 - **Length target:** 1,500 words. The top results (a trade-press explainer and two league-office pages) are 800 to 1,500 words; this page adds one table of reviewable and non-reviewable plays and a step-by-step of a challenge, which is the length.
 
 ### Outline
@@ -228,7 +228,7 @@ Rows 16, 17, 18, 57, 58, 59, 60; the replay rules also cover overtime (row 56).
 - **Title:** `Football Positions Explained: Every NFL Role | FootballBasics`
 - **Description:** `Every position on an American football team, from quarterback to long snapper: what each player does, where he lines up and what number he wears.`
 - **Main query:** football positions explained (AC: "football positions", "football positions explained", "football positions chart", "football positions and what they do", "football positions on offense", "football positions defense"). Many results are about another sport, so the first sentence says American football.
-- **Related questions:** what does a linebacker do (AC); what is a wide receiver (AC); what are special teams positions (AC); football positions by number (AC); what does a safety do (PAA?); what is the difference between a guard and a tackle (PAA?).
+- **Related questions:** what does a linebacker do (AC); what is a wide receiver (AC); what are special teams positions (AC); football positions by number (AC). **People also ask (seen 2026-10-30):** What's the hardest position in football? What are the 11 positions in a football team? (paragraph added) What is the rarest position in football? What are the top 5 most important positions in football?
 - **Length target:** 2,300 words. The top results are 1,500 to 3,000 word listicles with a line per position; the page is a position-by-position guide with a lineup diagram, so it sits at the long end.
 
 ### Outline
@@ -263,7 +263,7 @@ Rows 19, 20, 29, 74, N8. Position names and jobs are football vocabulary (N8), n
 - **Title:** `Football Formations Explained, With Diagrams | FootballBasics`
 - **Description:** `Offensive and defensive formations in American football, drawn out: shotgun, I formation, goal-line sets, the 4-3 and 3-4 defenses, and nickel.`
 - **Main query:** football formations explained (AC: "football formations", "football formations offense", "football formations defense", "football formations nfl", "football formations names"). The "explained" form is polluted by results about another sport, so the first sentence names American football and the title says "with diagrams".
-- **Related questions:** what is the shotgun formation (AC); what is a 4-3 defense (AC); what is nickel defense (AC); what is the I formation (PAA?); how many players must be on the line of scrimmage (PAA?).
+- **Related questions:** what is the shotgun formation (AC); what is a 4-3 defense (AC); what is nickel defense (AC). **People also ask (seen 2026-10-30):** no box shown.
 - **Length target:** 1,800 words. The top results are two NFL-office-style pages and listicles of 800 to 1,500 words; the diagrams are the information gain.
 
 ### Outline
@@ -297,7 +297,7 @@ Rows 2, 19, 20, 36, 75, 76, N8.
 - **Title:** `Special Teams Explained: Kickoffs, Punts, Kicks | FootballBasics`
 - **Description:** `What special teams are in football: how a kickoff works, when a team punts, how a field goal is kicked, and what a fair catch and touchback mean.`
 - **Main query:** special teams in football (AC: "special teams football", "special teams football meaning", "special teams football positions", "what are special teams in football").
-- **Related questions:** what are special teams in football (AC); what is a punt (AC); what is a kickoff (AC); how far is a field goal (AC); what is a fair catch (PAA?); what is an onside kick (PAA?).
+- **Related questions:** what are special teams in football (AC); what is a punt (AC); what is a kickoff (AC); how far is a field goal (AC). **People also ask (seen 2026-10-30):** Why is it called special teams? Which team has the best special teams in the NFL? What players are on special teams in the NFL? Has a QB ever played special teams?
 - **Length target:** 1,700 words. The top results are 700 to 1,400 words with a paragraph per unit; the diagrams and the 2026 kickoff rules are the information gain.
 
 ### Outline
@@ -333,7 +333,7 @@ Rows 1, 2, 3, 42, 50, 51, 52, 53, 54, 55, 71, 72, 76.
 - **Title:** `How Long Is a Football Game? About 3 Hours | FootballBasics`
 - **Description:** `An NFL game is 60 minutes on the clock and about three hours on the couch. See what stops the clock, how timeouts and halftime work, and why.`
 - **Main query:** how long is a football game (AC: "how long is a football game nfl", "how long is a football game usually", "how long is a football game on tv", "how long is a football game quarter").
-- **Related questions:** how long is halftime in the nfl (AC); how many timeouts in nfl (AC); what is the two minute warning (AC); why do football games take so long (AC; the homepage's lesson 22 owns the short answer, this page the long one); how long is an nfl game on tv (AC); does the clock stop on a first down (PAA?).
+- **Related questions:** how long is halftime in the nfl (AC); how many timeouts in nfl (AC); what is the two minute warning (AC); why do football games take so long (AC; the homepage's lesson 22 owns the short answer, this page the long one); how long is an nfl game on tv (AC). **People also ask (seen 2026-10-30):** Are football games 2 hours? How long is an NFL game in real time? How long does an average play last in an NFL game? Why is 00 banned in the NFL?
 - **Length target:** 1,400 words. The top results are 500 to 1,200 word pages built around "60 minutes versus about three hours" with a table by level of play; the page keeps to the NFL and adds the table of what stops the clock.
 
 ### Outline
@@ -369,7 +369,7 @@ Rows 6, 13, 14, 15, 61 to 66, N5.
 - **Title:** `How to Watch Football: What to Look For | FootballBasics`
 - **Description:** `A beginner's guide to watching an NFL game: the TV graphics, what to watch before, during and after each play, and when the game is really decided.`
 - **Main query:** how to watch football for beginners (AC: "how to watch football for beginners", "how to start watching football for beginners", "how to learn to watch football", "how to understand football for beginners"). The short form "how to watch football" completes to live-stream queries, so the page leads with "for beginners" in the lede and does not chase the stream intent.
-- **Related questions:** how to understand football (AC); what to look for when watching football (AC); what is the red zone in football (AC; owned here); what does 4th and goal mean (AC); what are the lines on the screen in football (AC family; the homepage owns the blue and yellow line questions, here only the full TV layout); what should I watch first (PAA?).
+- **Related questions:** how to understand football (AC); what to look for when watching football (AC); what is the red zone in football (AC; owned here); what does 4th and goal mean (AC); what are the lines on the screen in football (AC family; the homepage owns the blue and yellow line questions, here only the full TV layout). **People also ask (seen 2026-10-30):** What is the easiest way to watch NFL football? What age is too late to join the NFL? What is the dumbest rule in the NFL? What is the #1 easiest sport?
 - **Length target:** 1,600 words. The top results are short "tips" pages and a book listing; there is no strong competitor, so the length comes from the play-by-play walkthrough.
 
 ### Outline
@@ -405,7 +405,7 @@ Rows 8, 13, 19, 21, 29, 30, 31, 44, 50, 54, 61, 62, 64, N7.
 - **Title:** `Football Field Explained: Every Line and Mark | FootballBasics`
 - **Description:** `A guided tour of an American football field: the yard lines and numbers, hash marks, end zones, goalposts and the sidelines, with measurements.`
 - **Main query:** football field markings explained (AC: "football field markings", "football field markings diagram", "football field markings explained", "football field markings meaning"). "football field explained" alone is dominated by a finance term, so the title does not rely on it. Dimension queries ("football field dimensions", "how long is a football field") also land here (AC).
-- **Related questions:** how long is a football field (AC); football field dimensions (AC); what are the numbers on a football field (AC); what are hash marks in football (AC); how wide is a football field (AC family); why are there arrows next to the yard numbers (PAA?).
+- **Related questions:** how long is a football field (AC); football field dimensions (AC); what are the numbers on a football field (AC); what are hash marks in football (AC); how wide is a football field (AC family). **People also ask (seen 2026-10-30):** Why is the 20 yard line a different color? What does 10-yard line mean? What are the markings on a football field? What are the 9 yard marks on a football field?
 - **Length target:** 1,400 words. The top results are 500 to 1,000 word dimension pages; the page is a labelled diagram plus a tour, which is the information gain.
 
 ### Outline
@@ -441,7 +441,7 @@ Rows 27, 31, 48, 67, 68, 69, 70, 71, 72, 73, N7.
 - **Title:** `How the NFL Season Works, Start to Super Bowl | FootballBasics`
 - **Description:** `The NFL season in order: 17 games and a bye, how teams are grouped into conferences and divisions, who makes the playoffs, and how the Super Bowl is reached.`
 - **Main query:** how does the nfl season work (AC: "how the nfl season works", "how does the nfl season work for dummies", "how nfl regular season works", "how nfl post season works"). Secondary: how do nfl playoffs work (AC), nfl playoffs explained (AC).
-- **Related questions:** how many games in an nfl season (AC); how many teams make the nfl playoffs (AC); what is a bye week (AC); how do nfl playoffs work seeding (AC); what is a wild card (PAA?); how does the nfl draft work (AC; out of scope, a short pointer sentence only).
+- **Related questions:** how many games in an nfl season (AC); how many teams make the nfl playoffs (AC); what is a bye week (AC); how do nfl playoffs work seeding (AC); how does the nfl draft work (AC; out of scope, a short pointer sentence only). **People also ask (seen 2026-10-30):** Do AFC and NFC play each other in regular season? (sentence added) What is the lowest NFL salary? Why is 00 banned in the NFL? Can you explain the NFL in simple terms?
 - **Length target:** 1,500 words. The top results are 700 to 1,500 words and several are out of date (16 games, six playoff teams); a dated, current page earns its place by being correct. No dates for games go in the copy so it does not go stale.
 
 ### Outline
@@ -476,7 +476,7 @@ Rows 24; N1, N2, N3 (**verify** against the 2026 edition: a seeding proposal was
 - **Title:** `Football Glossary: Football Terms A to Z | FootballBasics`
 - **Description:** `Plain-English definitions of the football words you will hear in an NFL game, from audible and blitz to wild card and yards after the catch.`
 - **Main query:** football terms (AC: "football terms", "football terms list", "football terms and phrases", "football terms and meanings"). Secondary: football glossary (AC: "football glossary", "football glossary of terms", "american football glossary", "nfl football glossary"), football terms for beginners (AC).
-- **Related questions:** what does audible mean in football (AC); what is a blitz in football (AC); what is a pick six (AC); what is a sack (the homepage's lesson 12 link goes here); what does flag on the play mean (AC); what does bye week mean (AC).
+- **Related questions:** what does audible mean in football (AC); what is a blitz in football (AC); what is a pick six (AC); what is a sack (the homepage's lesson 12 link goes here); what does flag on the play mean (AC); what does bye week mean (AC). **People also ask (seen 2026-10-30):** What are the words used in football? What are some slang terms used in football? What are some football calls? What are some common phrases used in American football?
 - **Length target:** 2,800 words. The top results are a long reference article and several 500-word lists; with about 95 terms at 25 to 30 words each, 2,800 words is the length of the list.
 
 ### Outline
@@ -563,4 +563,4 @@ The page&rsquo;s `intro` and the "Who", "Corrections" and "Contact" blocks carry
 - **Delete** `/example-guide` and `/another-example` (folders, registry entries, `TARGET_WORDS` entries, chips) in the same change as the first set, per SETUP.md step 3.
 - **Redirects:** none; no URL has ever been public.
 - **Copy rule:** only the penalties and replay guides may name officials other than the referee (the Replay Official, the umpire and so on). Every other guide says "the officials" or "replay review".
-- **Before launch:** check "People also ask" by hand for each main query (not observed here); re-verify N3 (playoff format) and N6 (overtime history) against the 2026 NFL pages in a browser.
+- **Before launch:** done 2026-10-30: "People also ask" checked for each main query (recorded per guide above); N3 and N6 re-verified in Tasks 11 and 12.
