@@ -212,8 +212,8 @@ export default function ScoringPage() {
       <Section title="Unusual totals">
         <Block kicker="4 points" title="Can a team score exactly 4 points?">
           <p>
-            Yes, though you&rsquo;ll rarely see it. No single play is worth 4, so a team has to get there with two scores
-            of 2 points each, and the simplest way is two safeties.
+            Yes, though you&rsquo;ll rarely see it. No single play is worth 4, so it takes more than one score, and the
+            simplest way is two safeties.
           </p>
         </Block>
       </Section>

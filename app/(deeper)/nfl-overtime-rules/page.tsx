@@ -11,7 +11,7 @@ const REGULAR: [string, string][] = [
   ["Break before it starts", "Up to 3 minutes"],
   ["Length", "One period of 10 minutes"],
   ["Timeouts", "Two for each team"],
-  ["Who gets the ball", "Both teams, unless the defense scores on the first possession"],
+  ["Who gets the ball", "Both teams, unless the defense scores on the first possession or the 10 minutes run out first"],
   ["Who wins", "The team ahead once both have had the ball, or else the next team to score"],
   ["Still tied after 10 minutes", "The game ends in a tie"],
 ];
@@ -109,6 +109,10 @@ export default function OvertimePage() {
           </p>
           <p>
             Otherwise, the game can end as soon as both teams have had the ball and one of them leads.
+          </p>
+          <p>
+            The 10 minutes are a firm limit in the regular season, too. The period ends when they run out, even if the
+            second team hasn&rsquo;t had the ball yet or is still on its first possession.
           </p>
         </Block>
         <Block kicker="An answer is due" title="When the first team scores">

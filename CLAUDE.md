@@ -49,7 +49,7 @@ The homepage scrolls through one drive: a sticky `section.drive` holds the field
 - Warm and adult, like a knowledgeable friend explaining to a newcomer. No choppy strings of short sentences, no AI-isms.
 - Define a term before using it. Put the answer first.
 - No em dashes.
-- Call it "football", never "American football", unless the same sentence or paragraph has to tell it apart from soccer.
+- Call it "football", never "American football", unless the same sentence or paragraph has to tell it apart from soccer. The name of the American Football Conference is fine.
 - Never explain football through soccer or any other sport.
 - Never mention being invited to a game, friends taking you, or "heading to a game?".
 - Say "the officials" for the crew and "the referee" for the crew chief. Name the other positions only on the penalties and replay guides.

@@ -6,7 +6,7 @@ export const BANNED: [string, RegExp][] = [
 ];
 export const SITE_RULES: [string, RegExp][] = [
   ["no other sports", /\b(soccer|rugby|basketball|baseball|hockey)\b/i],
-  ["football, not American football", /american football/i],
+  ["football, not American football (the American Football Conference is its name)", /\bamerican football\b(?! conference)/i],
   ["no invited-by-friends framing", /\b(invited|your friends|heading to (a|the) game)\b/i],
   ["the officials or the referee, never the refs", /\brefs?\b/i],
 ];

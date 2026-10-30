@@ -142,7 +142,7 @@ export default function SeasonPage() {
       <Section title="The league in one picture">
         <Block kicker="The structure" title="32 teams, two conferences, four divisions each">
           <p>
-            The NFL has 32 teams, split into two <strong>conferences</strong> of 16, the AFC and the NFC. Each
+            The NFL has 32 teams, split into two <strong>conferences</strong> of 16, the American Football Conference (AFC) and the National Football Conference (NFC). Each
             conference is split again into four <strong>divisions</strong> of four teams, named East, North, South and
             West. A team&rsquo;s division is its closest circle of rivals: it plays them most often, and it competes
             with them for a division title.
