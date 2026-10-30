@@ -25,6 +25,17 @@ export function breadcrumbJsonLd(path: string): object {
   };
 }
 
+export function glossaryJsonLd(terms: { term: string; definition: string }[]): object {
+  const url = `${BASE_URL}/football-glossary`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "DefinedTermSet",
+    name: "Football glossary",
+    url,
+    hasDefinedTerm: terms.map(t => ({ "@type": "DefinedTerm", name: t.term, description: t.definition, inDefinedTermSet: url })),
+  };
+}
+
 export function articleJsonLd(path: string): object[] {
   const page = getPage(path);
   const url = `${BASE_URL}${path}`;

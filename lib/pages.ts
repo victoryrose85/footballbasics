@@ -121,6 +121,14 @@ export const PAGES: PageInfo[] = [
     kind: "guide",
   },
   {
+    path: "/football-glossary",
+    name: "Glossary",
+    title: `Football Glossary: Football Terms A to Z${S}`,
+    description: "Plain-English definitions of the football words you will hear in an NFL game, from audible and blitz to wild card and yards after the catch.",
+    updated: "2026-10-30",
+    kind: "guide",
+  },
+  {
     path: "/about",
     name: "About",
     title: `About ${SITE.name}`,

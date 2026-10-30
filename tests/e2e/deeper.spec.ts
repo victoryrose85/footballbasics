@@ -144,6 +144,30 @@ test("formations has 11 lineups", async ({ page }) => {
   await expect(page.locator("figure.diagram")).toHaveCount(11);
 });
 
+test("glossary JSON-LD matches the page", async ({ page }) => {
+  await page.goto("/football-glossary");
+  const { defined, shown } = await page.evaluate(() => {
+    const nodes = Array.from(document.querySelectorAll('script[type="application/ld+json"]')).flatMap(e => [JSON.parse(e.textContent || "null")].flat());
+    const set = nodes.find((n: { "@type": string }) => n["@type"] === "DefinedTermSet");
+    return {
+      defined: set.hasDefinedTerm.map((d: { name: string; description: string }) => [d.name, d.description]) as string[][],
+      shown: Array.from(document.querySelectorAll("dl.terms dt")).map(dt => {
+        const dd = dt.nextElementSibling!.cloneNode(true) as HTMLElement;
+        dd.querySelector(".more")?.remove();
+        return [dt.textContent!.trim(), dd.textContent!.trim()];
+      }),
+    };
+  });
+  expect(defined.length).toBeGreaterThanOrEqual(90);
+  expect([...shown].sort()).toEqual([...defined].sort());
+});
+
+test("a letter link brings its letter into view", async ({ page }) => {
+  await page.goto("/football-glossary");
+  await page.locator('nav.letters a[href="#letter-s"]').click();
+  await expect(page.locator("#letter-s > h2")).toBeInViewport();
+});
+
 test("contact anchor", async ({ page }) => {
   await page.goto("/about#contact");
   await expect(page.locator("#contact")).toBeInViewport();

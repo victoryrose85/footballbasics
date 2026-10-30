@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { homeJsonLd, articleJsonLd, breadcrumbJsonLd } from "@/lib/structured-data";
+import { homeJsonLd, articleJsonLd, breadcrumbJsonLd, glossaryJsonLd } from "@/lib/structured-data";
 import { GUIDES } from "@/lib/pages";
 import { SITE } from "@/site.config";
 
@@ -29,5 +29,17 @@ describe("structured data", () => {
 
   test("breadcrumbJsonLd is the Article's breadcrumb on its own", () => {
     expect(breadcrumbJsonLd("/about")).toEqual(articleJsonLd("/about")[0]);
+  });
+
+  test("glossaryJsonLd has a DefinedTerm per term, with the same text", () => {
+    const set = glossaryJsonLd([{ term: "Sack", definition: "A tackle of the quarterback." }, { term: "Snap", definition: "Starts the play." }]) as Node;
+    const url = `${SITE.url}/football-glossary`;
+    expect(set["@type"]).toBe("DefinedTermSet");
+    expect(set.name).toBe("Football glossary");
+    expect(set.url).toBe(url);
+    expect(set.hasDefinedTerm).toEqual([
+      { "@type": "DefinedTerm", name: "Sack", description: "A tackle of the quarterback.", inDefinedTermSet: url },
+      { "@type": "DefinedTerm", name: "Snap", description: "Starts the play.", inDefinedTermSet: url },
+    ]);
   });
 });

@@ -69,6 +69,19 @@
 .sheet table.data tbody tr:nth-child(even){background:var(--tint)}
 @media (max-width:560px){.sheet table.data{font-size:13px}.sheet table.data th,.sheet table.data td{padding:6px 5px}}
 
+/* the glossary: letters to jump to (not sticky, so nothing hides under them), and each letter's terms */
+.sheet nav.letters{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;background:#fff;border:3px solid var(--ink);border-radius:12px;padding:8px;margin:0 6px 8px 0}
+.sheet nav.letters a,.sheet nav.letters span{min-width:30px;padding:6px 2px;text-align:center;font:700 15px/1 var(--font-body);border-radius:6px}
+.sheet nav.letters a{color:var(--ink);text-decoration:none}
+.sheet nav.letters a:hover{background:var(--accent)}
+.sheet nav.letters a:focus-visible{outline-color:var(--ink)}
+.sheet nav.letters span{color:var(--muted);opacity:.5}
+.sheet dl.terms{margin:0}
+.sheet dl.terms dt{font:700 18px/1.25 var(--font-display),sans-serif;color:var(--ink);scroll-margin-top:16px}
+.sheet dl.terms dd{font:600 16px/1.65 var(--font-body);margin:2px 0 0}
+.sheet dl.terms dd+dt{margin-top:16px}
+.sheet dl.terms .more{display:block;margin-top:2px;font-size:14.5px}
+
 .sheet .ad{margin:6px 0 24px}
 .sheet .back{margin-top:12px}
 .sheet .back .block > a,.solo .block > a{display:inline-block;margin-top:10px}

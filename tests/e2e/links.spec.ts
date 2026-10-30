@@ -25,6 +25,14 @@ test("every jump link lands on an element", async ({ page }) => {
   }
 });
 
+// All 13 guides exist now, so anything still waiting is a mistyped path.
+test("no link is waiting for a page", async ({ page }) => {
+  for (const { path } of PAGES) {
+    await page.goto(path);
+    await expect(page.locator("[data-waiting]"), path).toHaveCount(0);
+  }
+});
+
 test("a missing page gets the site's 404, with a way back and no ads", async ({ page }) => {
   const res = await page.goto("/no-such-page");
   expect(res?.status()).toBe(404);
